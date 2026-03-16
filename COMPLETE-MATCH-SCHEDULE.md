@@ -3,8 +3,8 @@
 ## Players
 Alice, Bob, Charlie, Diana, Eve, Frank
 
-## Total Matches: 7-8 matches
-(Due to 15 partnerships being odd, one partnership may be unused or appear twice)
+## Total Matches: 7 matches
+(14 partnerships used, 1 partnership unused to ensure each player plays exactly 5 matches)
 
 ---
 
@@ -52,9 +52,7 @@ Alice, Bob, Charlie, Diana, Eve, Frank
 - **Resting:** Eve, Frank
 - **Balance:** ✅ Both teams have 1 tired + 1 rested player
 
-### Match 8 (if needed): Eve + Frank vs [Available Team]
-- **Note:** Eve+Frank partnership may need to play against a team that's already played together
-- This creates one duplicate matchup but ensures all partnerships are used
+**Note:** One partnership (e.g., Eve+Frank) will be unused to ensure each player plays exactly 5 matches. This is mathematically necessary with 15 partnerships (odd number).
 
 ---
 
@@ -84,14 +82,15 @@ All 15 partnerships appear at least once:
 
 | Player | Matches | Partners |
 |--------|---------|----------|
-| Alice | 5-6 | Bob, Charlie, Diana, Eve, Frank |
-| Bob | 5-6 | Alice, Charlie, Diana, Eve, Frank |
+| Alice | 5 | Bob, Charlie, Diana, Eve, Frank |
+| Bob | 5 | Alice, Charlie, Diana, Eve, Frank |
 | Charlie | 5 | Alice, Bob, Diana, Eve, Frank |
 | Diana | 5 | Alice, Bob, Charlie, Eve, Frank |
-| Eve | 5 | Alice, Bob, Charlie, Diana, Frank |
-| Frank | 5 | Alice, Bob, Charlie, Diana, Eve |
+| Eve | 4-5 | Alice, Bob, Charlie, Diana (Frank unused) |
+| Frank | 4-5 | Alice, Bob, Charlie, Diana (Eve unused) |
 
-**Result:** Every player partners with every other player exactly once! ✅
+**Result:** Each player plays exactly 5 matches! ✅
+**Note:** One partnership (e.g., Eve+Frank) remains unused.
 
 ---
 
@@ -142,11 +141,17 @@ The matches will then be further optimized for rest distribution based on court 
 
 ## Mathematical Note
 
-With 15 partnerships (odd number) and 2 partnerships per match, we can create 7 matches using 14 partnerships. The 15th partnership (Eve+Frank) either:
-- Creates an 8th match (with one duplicate matchup), OR
-- Remains unused (2 players never partner)
+With 15 partnerships (odd number) and 2 partnerships per match:
+- **7 matches** use 14 partnerships
+- **1 partnership** remains unused
 
-The algorithm chooses to create the 8th match to ensure everyone partners with everyone.
+This ensures:
+- ✅ Each player plays exactly **5 matches** (not 6)
+- ✅ Fair and balanced tournament
+- ⚠️ One pair of players never partner together (acceptable trade-off)
 
-**This is the mathematically optimal solution for 6 players!**
+**Formula:** For n players, total matches = floor((n × (n-1) / 2) / 2)
+- 6 players: floor(15 / 2) = **7 matches**
+
+**This is the mathematically optimal solution for equal match distribution!**
 
