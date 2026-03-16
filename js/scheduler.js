@@ -27,114 +27,103 @@ export class MatchScheduler {
       }
     }
 
-    // Create matches using greedy matching to maximize partnership usage
+    // Health-aware scheduling: consider player fatigue and partnership separation
     const matches = [];
     const usedPartnerships = new Set();
-    const usedMatchups = new Set();
+    const playerLastMatch = new Map();
+    this.players.forEach(p => playerLastMatch.set(p.id, -1));
 
-    // Keep trying to create matches until we can't anymore
-    let attempts = 0;
-    const maxAttempts = allPartnerships.length * 2;
+    let matchIndex = 0;
 
-    while (usedPartnerships.size < allPartnerships.length && attempts < maxAttempts) {
-      attempts++;
+    while (usedPartnerships.size < allPartnerships.length) {
+      // Find best team1 (prefer well-rested players)
+      let bestTeam1 = null;
+      let bestTeam1Score = -Infinity;
 
-      // Find first unused partnership
-      let team1 = null;
-      for (const p of allPartnerships) {
-        if (!usedPartnerships.has(p.key)) {
-          team1 = p;
-          break;
-        }
-      }
-
-      if (!team1) break;
-
-      // Find a compatible opponent team (unused partnership, no shared players)
-      let team2 = null;
       for (const p of allPartnerships) {
         if (usedPartnerships.has(p.key)) continue;
-        if (p.key === team1.key) continue;
 
-        // Check if teams share a player
-        const sharesPlayer = team1.playerIds.some(id => p.playerIds.includes(id));
+        const rest1 = matchIndex - playerLastMatch.get(p.player1.id);
+        const rest2 = matchIndex - playerLastMatch.get(p.player2.id);
+        const score = rest1 + rest2;
+
+        if (score > bestTeam1Score) {
+          bestTeam1Score = score;
+          bestTeam1 = p;
+        }
+      }
+
+      if (!bestTeam1) break;
+
+      // Find best team2 (prefer balanced fatigue + avoid recent partners)
+      let bestTeam2 = null;
+      let bestTeam2Score = -Infinity;
+
+      for (const p of allPartnerships) {
+        if (usedPartnerships.has(p.key)) continue;
+        if (p.key === bestTeam1.key) continue;
+
+        // Must not share players
+        const sharesPlayer = bestTeam1.playerIds.some(id => p.playerIds.includes(id));
         if (sharesPlayer) continue;
 
-        // Check if this matchup already exists
-        const matchupKey = [...team1.playerIds, ...p.playerIds].sort().join('-');
-        if (usedMatchups.has(matchupKey)) continue;
+        // Calculate rest for this team
+        const rest1 = matchIndex - playerLastMatch.get(p.player1.id);
+        const rest2 = matchIndex - playerLastMatch.get(p.player2.id);
 
-        team2 = p;
-        break;
+        // Score: prefer balanced teams (one rested + one tired)
+        let score = rest1 + rest2;
+
+        // Bonus for balanced fatigue
+        const minRest = Math.min(rest1, rest2);
+        const maxRest = Math.max(rest1, rest2);
+        if (minRest === 0 && maxRest >= 1) {
+          score += 100; // Strong preference for balanced teams
+        }
+
+        if (score > bestTeam2Score) {
+          bestTeam2Score = score;
+          bestTeam2 = p;
+        }
       }
 
-      if (team2) {
-        // Create the match
-        const matchupKey = [...team1.playerIds, ...team2.playerIds].sort().join('-');
+      // If no team found with strict criteria, relax and find any compatible team
+      if (!bestTeam2) {
+        for (const p of allPartnerships) {
+          if (usedPartnerships.has(p.key)) continue;
+          if (p.key === bestTeam1.key) continue;
 
-        matches.push({
-          id: this.generateId(),
-          team1: { player1: team1.player1, player2: team1.player2 },
-          team2: { player1: team2.player1, player2: team2.player2 },
-          team1Score: null,
-          team2Score: null,
-          status: 'pending',
-          courtNumber: null
-        });
-
-        usedPartnerships.add(team1.key);
-        usedPartnerships.add(team2.key);
-        usedMatchups.add(matchupKey);
-      }
-    }
-
-    // Handle remaining unused partnerships by creating additional matches
-    // Try to pair unused partnerships together first, then allow repeats if needed
-    for (const p1 of allPartnerships) {
-      if (usedPartnerships.has(p1.key)) continue;
-
-      // First, try to find another unused partnership
-      let team2 = null;
-      for (const p2 of allPartnerships) {
-        if (usedPartnerships.has(p2.key)) continue; // Prefer unused
-        if (p1.key === p2.key) continue;
-
-        const sharesPlayer = p1.playerIds.some(id => p2.playerIds.includes(id));
-        if (sharesPlayer) continue;
-
-        team2 = p2;
-        break;
-      }
-
-      // If no unused partnership found, find any compatible opponent
-      if (!team2) {
-        for (const p2 of allPartnerships) {
-          if (p1.key === p2.key) continue;
-
-          const sharesPlayer = p1.playerIds.some(id => p2.playerIds.includes(id));
+          const sharesPlayer = bestTeam1.playerIds.some(id => p.playerIds.includes(id));
           if (sharesPlayer) continue;
 
-          team2 = p2;
+          bestTeam2 = p;
           break;
         }
       }
 
-      if (team2) {
-        matches.push({
-          id: this.generateId(),
-          team1: { player1: p1.player1, player2: p1.player2 },
-          team2: { player1: team2.player1, player2: team2.player2 },
-          team1Score: null,
-          team2Score: null,
-          status: 'pending',
-          courtNumber: null
-        });
+      if (!bestTeam2) break;
 
-        usedPartnerships.add(p1.key);
-        if (!usedPartnerships.has(team2.key)) {
-          usedPartnerships.add(team2.key);
-        }
-      }
+      // Create the match
+      matches.push({
+        id: this.generateId(),
+        team1: { player1: bestTeam1.player1, player2: bestTeam1.player2 },
+        team2: { player1: bestTeam2.player1, player2: bestTeam2.player2 },
+        team1Score: null,
+        team2Score: null,
+        status: 'pending',
+        courtNumber: null
+      });
+
+      // Update tracking
+      usedPartnerships.add(bestTeam1.key);
+      usedPartnerships.add(bestTeam2.key);
+
+      [bestTeam1, bestTeam2].forEach(team => {
+        playerLastMatch.set(team.player1.id, matchIndex);
+        playerLastMatch.set(team.player2.id, matchIndex);
+      });
+
+      matchIndex++;
     }
 
     return matches;
