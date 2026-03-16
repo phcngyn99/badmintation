@@ -163,3 +163,185 @@
   .btn-full { width: auto; }
 }
 
+/* ===========================
+   Cards & Sections
+   =========================== */
+
+.card {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(20px);
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-lg);
+  box-shadow: var(--shadow-clay-card);
+  transition: all var(--transition-slow);
+}
+
+@media (min-width: 768px) {
+  .card {
+    padding: var(--spacing-xl);
+    border-radius: var(--radius-2xl);
+  }
+}
+
+.section {
+  margin-bottom: var(--spacing-xl);
+}
+
+.section-title {
+  font-size: 1.5rem;
+  margin-bottom: var(--spacing-xs);
+  color: var(--clay-foreground);
+}
+
+.section-subtitle {
+  font-size: 0.875rem;
+  color: var(--clay-muted);
+  margin-bottom: var(--spacing-lg);
+}
+
+/* ===========================
+   Inputs
+   =========================== */
+
+.input-clay {
+  width: 100%;
+  height: 3.5rem;
+  padding: 0 var(--spacing-lg);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--clay-foreground);
+  background: #EFEBF5;
+  border: none;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-clay-pressed);
+  transition: all var(--transition-base);
+}
+
+.input-clay::placeholder {
+  color: var(--clay-muted);
+}
+
+.input-clay:focus {
+  outline: none;
+  background: white;
+  box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.2);
+}
+
+.input-number {
+  width: 80px;
+  height: 2.5rem;
+  padding: 0 var(--spacing-sm);
+  font-family: var(--font-heading);
+  font-size: 1.125rem;
+  font-weight: 700;
+  text-align: center;
+  color: var(--clay-foreground);
+  background: #EFEBF5;
+  border: none;
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-clay-pressed);
+}
+
+.input-number:focus {
+  outline: none;
+  background: white;
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.2);
+}
+
+/* ===========================
+   Player Management
+   =========================== */
+
+.player-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-xl);
+}
+
+@media (min-width: 640px) {
+  .player-input-group {
+    flex-direction: row;
+  }
+
+  .player-input-group .input-clay {
+    flex: 1;
+  }
+
+  .player-input-group .btn {
+    flex-shrink: 0;
+  }
+}
+
+.player-roster {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-lg);
+  min-height: 100px;
+}
+
+.player-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-md);
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-clay-card);
+  animation: fade-in 300ms ease-out;
+}
+
+.player-name {
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--clay-foreground);
+}
+
+.btn-remove {
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(239, 68, 68, 0.1);
+  color: #DC2626;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 1.25rem;
+  line-height: 1;
+  transition: all var(--transition-fast);
+}
+
+.btn-remove:hover {
+  background: #DC2626;
+  color: white;
+  transform: scale(1.1);
+}
+
+.btn-remove:active {
+  transform: scale(0.9);
+}
+
+.tournament-setup {
+  padding-top: var(--spacing-lg);
+  border-top: 2px solid rgba(124, 58, 237, 0.1);
+}
+
+.setup-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-lg);
+}
+
+.setup-label {
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--clay-foreground);
+}
+
