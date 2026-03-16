@@ -36,7 +36,7 @@ export class MatchScheduler {
     let matchIndex = 0;
 
     while (usedPartnerships.size < allPartnerships.length) {
-      // Find best team1 (prefer well-rested players)
+      // Find best team1 (prefer BALANCED team: one tired + one rested)
       let bestTeam1 = null;
       let bestTeam1Score = -Infinity;
 
@@ -45,7 +45,15 @@ export class MatchScheduler {
 
         const rest1 = matchIndex - playerLastMatch.get(p.player1.id);
         const rest2 = matchIndex - playerLastMatch.get(p.player2.id);
-        const score = rest1 + rest2;
+        const minRest = Math.min(rest1, rest2);
+        const maxRest = Math.max(rest1, rest2);
+
+        let score = rest1 + rest2;
+
+        // STRONG preference for balanced teams (one tired, one rested)
+        if (minRest === 0 && maxRest >= 1) {
+          score += 10000; // Highest priority
+        }
 
         if (score > bestTeam1Score) {
           bestTeam1Score = score;
@@ -55,9 +63,15 @@ export class MatchScheduler {
 
       if (!bestTeam1) break;
 
-      // Find best team2 (prefer balanced fatigue + avoid recent partners)
+      // Find best team2 (MUST have balanced fatigue with team1)
       let bestTeam2 = null;
       let bestTeam2Score = -Infinity;
+
+      // Calculate team1's fatigue profile
+      const team1Rest1 = matchIndex - playerLastMatch.get(bestTeam1.player1.id);
+      const team1Rest2 = matchIndex - playerLastMatch.get(bestTeam1.player2.id);
+      const team1MinRest = Math.min(team1Rest1, team1Rest2);
+      const team1MaxRest = Math.max(team1Rest1, team1Rest2);
 
       for (const p of allPartnerships) {
         if (usedPartnerships.has(p.key)) continue;
@@ -70,15 +84,31 @@ export class MatchScheduler {
         // Calculate rest for this team
         const rest1 = matchIndex - playerLastMatch.get(p.player1.id);
         const rest2 = matchIndex - playerLastMatch.get(p.player2.id);
-
-        // Score: prefer balanced teams (one rested + one tired)
-        let score = rest1 + rest2;
-
-        // Bonus for balanced fatigue
         const minRest = Math.min(rest1, rest2);
         const maxRest = Math.max(rest1, rest2);
+
+        // REQUIRE balanced teams: both teams should have similar fatigue profiles
+        // If team1 has (0,1), team2 should also have (0,1) or similar
+        // Avoid (0,1) vs (2,2) or (0,0) vs (1,1)
+
+        let score = rest1 + rest2;
+
+        // REQUIRE both teams to have balanced fatigue (one tired + one rested)
         if (minRest === 0 && maxRest >= 1) {
-          score += 100; // Strong preference for balanced teams
+          // This team is balanced
+          if (team1MinRest === 0 && team1MaxRest >= 1) {
+            score += 10000; // Both teams balanced - PERFECT!
+          } else {
+            score -= 5000; // Team1 not balanced, avoid this pairing
+          }
+        } else {
+          // This team is NOT balanced
+          if (team1MinRest === 0 && team1MaxRest >= 1) {
+            score -= 5000; // Team1 balanced but team2 not, avoid
+          } else {
+            // Neither team balanced - last resort
+            score += 0;
+          }
         }
 
         if (score > bestTeam2Score) {
