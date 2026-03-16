@@ -9,6 +9,7 @@ export class UIController {
     this.state = new TournamentState();
     this.state.subscribe(this.render.bind(this));
     this.initializeEventListeners();
+    this.render(); // Initial render
   }
 
   initializeEventListeners() {
