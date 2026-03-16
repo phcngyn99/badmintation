@@ -35,11 +35,11 @@ export class MatchScheduler {
 
     let matchIndex = 0;
 
-    // Calculate max matches: each match uses 2 partnerships
-    // For odd number of partnerships, we use (n-1) to ensure each player plays equal matches
-    const maxMatches = Math.floor(allPartnerships.length / 2);
+    // Calculate max matches: try to use ALL partnerships if possible
+    // For odd number of partnerships, we'll create one extra match
+    const targetPartnerships = allPartnerships.length;
 
-    while (usedPartnerships.size < allPartnerships.length && matchIndex < maxMatches) {
+    while (usedPartnerships.size < targetPartnerships && matchIndex < 20) {
       // Find best team1 (prefer BALANCED team: one tired + one rested)
       let bestTeam1 = null;
       let bestTeam1Score = -Infinity;
@@ -132,6 +132,26 @@ export class MatchScheduler {
 
           bestTeam2 = p;
           break;
+        }
+      }
+
+      // Special case: if this is the last unused partnership and we can't find a perfect match,
+      // allow using a partnership that's already been used to ensure all partnerships play
+      if (!bestTeam2 && usedPartnerships.size === allPartnerships.length - 1) {
+        // Find the last unused partnership
+        const lastUnused = allPartnerships.find(p => !usedPartnerships.has(p.key));
+        if (lastUnused) {
+          // Find ANY compatible opponent, even if already used
+          for (const p of allPartnerships) {
+            if (p.key === lastUnused.key) continue;
+
+            const sharesPlayer = lastUnused.playerIds.some(id => p.playerIds.includes(id));
+            if (sharesPlayer) continue;
+
+            bestTeam1 = lastUnused;
+            bestTeam2 = p;
+            break;
+          }
         }
       }
 
