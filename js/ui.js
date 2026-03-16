@@ -59,11 +59,11 @@ export class UIController {
     }
     
     const courtCount = parseInt(document.getElementById('courtCount').value);
-    
-    // Generate matches
+
+    // Generate matches with court count for optimal rest scheduling
     const scheduler = new MatchScheduler(players);
-    const matches = scheduler.generateMatches();
-    
+    const matches = scheduler.generateMatches(courtCount);
+
     this.state.setMatches(matches);
     this.state.startTournament(courtCount);
   }

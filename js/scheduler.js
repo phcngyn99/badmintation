@@ -6,10 +6,10 @@ export class MatchScheduler {
     this.matches = [];
   }
 
-  generateMatches() {
+  generateMatches(courtCount = 2) {
     const teams = this.generateAllTeams();
     const matches = this.createMatches(teams);
-    const optimizedMatches = this.optimizeForRest(matches);
+    const optimizedMatches = this.optimizeForRest(matches, courtCount);
     return optimizedMatches;
   }
 
@@ -59,26 +59,113 @@ export class MatchScheduler {
     return matches;
   }
 
-  optimizeForRest(matches) {
+  optimizeForRest(matches, courtCount) {
     const optimized = [];
     const remaining = [...matches];
 
-    while (remaining.length > 0) {
-      let bestMatch = null;
-      let bestScore = -1;
+    // Track when each player last played (match index)
+    const playerLastMatch = new Map();
+    this.players.forEach(p => playerLastMatch.set(p.id, -1));
 
+    // Calculate minimum rest needed based on players and courts
+    const minRestGap = this.calculateMinRestGap(this.players.length, courtCount);
+
+    let currentRound = 0;
+
+    while (remaining.length > 0) {
+      // Try to schedule matches for this round
+      // Maximum matches = min(courtCount, floor(playerCount / 4))
+      const maxMatchesThisRound = Math.min(courtCount, Math.floor(this.players.length / 4));
+      const roundMatches = [];
+      const playersInRound = new Set();
+
+      // Find matches where all players have rested enough
       for (const match of remaining) {
-        const restScore = this.calculateRestScore(match, optimized.length);
-        if (restScore > bestScore) {
-          bestScore = restScore;
-          bestMatch = match;
+        const matchPlayers = this.getMatchPlayers(match);
+        const playerIds = matchPlayers.map(p => p.id);
+
+        // Check if any player in this match is already scheduled this round
+        if (playerIds.some(id => playersInRound.has(id))) {
+          continue;
+        }
+
+        // Check if all players have rested enough
+        const allPlayersRested = playerIds.every(id => {
+          const lastMatch = playerLastMatch.get(id);
+          const restPeriod = currentRound - lastMatch;
+          return restPeriod > minRestGap; // Strict: must have MORE than minRestGap
+        });
+
+        if (allPlayersRested && roundMatches.length < maxMatchesThisRound) {
+          roundMatches.push(match);
+          playerIds.forEach(id => playersInRound.add(id));
         }
       }
 
-      if (bestMatch) {
-        optimized.push(bestMatch);
-        remaining.splice(remaining.indexOf(bestMatch), 1);
-      } else {
+      // If we couldn't find enough matches with proper rest, relax constraints gradually
+      if (roundMatches.length === 0) {
+        // Find matches with best rest scores, prioritizing those with longest rest
+        const candidateMatches = [];
+
+        for (const match of remaining) {
+          const matchPlayers = this.getMatchPlayers(match);
+          const playerIds = matchPlayers.map(p => p.id);
+
+          // Skip if players already in this round
+          if (playerIds.some(id => playersInRound.has(id))) {
+            continue;
+          }
+
+          // Calculate rest score (sum of rest periods for all 4 players)
+          const restScore = playerIds.reduce((sum, id) => {
+            return sum + (currentRound - playerLastMatch.get(id));
+          }, 0);
+
+          // Also calculate minimum rest (worst rested player)
+          const minRest = Math.min(...playerIds.map(id =>
+            currentRound - playerLastMatch.get(id)
+          ));
+
+          candidateMatches.push({
+            match,
+            restScore,
+            minRest,
+            playerIds
+          });
+        }
+
+        // Sort by minimum rest first (ensure no one plays back-to-back if possible)
+        // Then by total rest score
+        candidateMatches.sort((a, b) => {
+          if (b.minRest !== a.minRest) return b.minRest - a.minRest;
+          return b.restScore - a.restScore;
+        });
+
+        // Take the best match
+        if (candidateMatches.length > 0) {
+          const best = candidateMatches[0];
+          roundMatches.push(best.match);
+          best.playerIds.forEach(id => playersInRound.add(id));
+        }
+      }
+
+      // Add round matches to optimized list and update tracking
+      roundMatches.forEach(match => {
+        optimized.push(match);
+        remaining.splice(remaining.indexOf(match), 1);
+
+        // Update last match index for all players in this match
+        this.getMatchPlayers(match).forEach(player => {
+          playerLastMatch.set(player.id, currentRound);
+        });
+      });
+
+      currentRound++;
+
+      // Safety check to prevent infinite loop
+      if (currentRound > matches.length * 2) {
+        // Just add remaining matches
+        optimized.push(...remaining);
         break;
       }
     }
@@ -86,21 +173,35 @@ export class MatchScheduler {
     return optimized;
   }
 
-  calculateRestScore(match, currentIndex) {
-    const players = [
+  calculateMinRestGap(playerCount, courtCount) {
+    // Dynamic calculation of minimum rest gap
+    // Goal: Ensure players don't play too many consecutive matches
+
+    // Actual matches per round is limited by available players
+    const maxMatchesPerRound = Math.min(courtCount, Math.floor(playerCount / 4));
+    const playersPerRound = maxMatchesPerRound * 4; // 4 players per match
+
+    // Calculate how many players sit out each round
+    const playersResting = playerCount - playersPerRound;
+
+    // If more than half the players rest each round, we can enforce longer gaps
+    if (playersResting >= playerCount / 2) {
+      return 2; // At least 2 matches between plays
+    } else if (playersResting > 0) {
+      return 1; // At least 1 match between plays
+    } else {
+      // Everyone plays every round - impossible to rest
+      return 0;
+    }
+  }
+
+  getMatchPlayers(match) {
+    return [
       match.team1.player1,
       match.team1.player2,
       match.team2.player1,
       match.team2.player2
     ];
-
-    let totalRest = 0;
-    for (const player of players) {
-      const restPeriod = currentIndex - player.lastMatchIndex;
-      totalRest += restPeriod;
-    }
-
-    return totalRest;
   }
 
   teamsSharePlayer(team1, team2) {
