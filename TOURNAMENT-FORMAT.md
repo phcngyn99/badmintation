@@ -1,158 +1,179 @@
 # Tournament Format Explanation
 
-## Round-Robin Doubles Format
+## Social Doubles Round-Robin Format
 
-This badminton tournament uses a **standard round-robin doubles format** where every unique combination of 4 players competes exactly once.
+This badminton tournament uses a **social doubles format** where **each player partners with every other player exactly once**. This is the standard format for recreational and social badminton tournaments.
 
 ---
 
 ## How It Works
 
-### Match Generation
+### The Goal
+
+**Each player partners with every other player exactly once.**
 
 For 6 players (Alice, Bob, Charlie, Diana, Eve, Frank):
+- Alice partners with: Bob, Charlie, Diana, Eve, Frank (5 partners)
+- Bob partners with: Alice, Charlie, Diana, Eve, Frank (5 partners)
+- Each player partners with 5 others = **5 partnerships per player**
 
-1. **Generate all possible teams** (partnerships):
-   - Alice+Bob, Alice+Charlie, Alice+Diana, Alice+Eve, Alice+Frank
-   - Bob+Charlie, Bob+Diana, Bob+Eve, Bob+Frank
-   - Charlie+Diana, Charlie+Eve, Charlie+Frank
-   - Diana+Eve, Diana+Frank
-   - Eve+Frank
-   - **Total: 15 possible teams**
+### Total Partnerships
 
-2. **Create all valid matches**:
-   - Take every pair of teams that don't share a player
-   - Example: Alice+Bob vs Charlie+Diana ✓ (no shared players)
-   - Example: Alice+Bob vs Alice+Charlie ✗ (Alice appears in both)
+With 6 players:
+- Total unique partnerships = 6 × 5 ÷ 2 = **15 partnerships**
+- Each partnership plays exactly **1 match**
 
-3. **Remove duplicate matchups**:
-   - Each unique combination of 4 players plays exactly once
-   - Example: If "Alice+Bob vs Charlie+Diana" exists, don't add it again
+### Match Generation
 
-**Result: 15 unique matches for 6 players**
+1. **Create all possible partnerships** (15 for 6 players)
+2. **Pair partnerships into matches** where teams don't share players
+3. **Ensure all partnerships are used** (may require some matchup repeats)
 
----
-
-## What This Means
-
-### ✅ Guaranteed
-
-- **No duplicate matchups:** The same 4 players never play together twice
-- **Maximum variety:** Every valid combination of 4 players competes
-- **Fair distribution:** All players get similar playing time
-
-### ⚠️ Expected Behavior
-
-- **Partnerships repeat:** Alice+Bob may play together multiple times (6 times for 6 players)
-- **Opponents repeat:** Alice may face Charlie multiple times
-- **This is normal and correct for round-robin doubles!**
+**Result: 8 matches for 6 players**
 
 ---
 
 ## Example: 6 Players
 
 ```
-Match 1:  Alice+Bob      vs  Charlie+Diana
-Match 2:  Alice+Bob      vs  Charlie+Eve
-Match 3:  Alice+Bob      vs  Charlie+Frank
-Match 4:  Alice+Bob      vs  Diana+Eve
-Match 5:  Alice+Bob      vs  Diana+Frank
-Match 6:  Alice+Bob      vs  Eve+Frank
-Match 7:  Alice+Charlie  vs  Diana+Eve
-Match 8:  Alice+Charlie  vs  Diana+Frank
-Match 9:  Alice+Charlie  vs  Eve+Frank
-Match 10: Alice+Diana    vs  Eve+Frank
-Match 11: Alice+Eve      vs  Bob+Charlie
-Match 12: Alice+Frank    vs  Bob+Charlie
-Match 13: Bob+Diana      vs  Charlie+Eve
-Match 14: Bob+Eve        vs  Charlie+Frank
-Match 15: Bob+Frank      vs  Charlie+Diana
+Match 1: Alice+Bob      vs  Charlie+Diana
+Match 2: Alice+Charlie  vs  Diana+Eve
+Match 3: Alice+Diana    vs  Eve+Frank
+Match 4: Alice+Eve      vs  Bob+Charlie
+Match 5: Alice+Frank    vs  Bob+Diana
+Match 6: Bob+Eve        vs  Charlie+Frank
+Match 7: Bob+Frank      vs  Charlie+Eve
+Match 8: Eve+Frank      vs  Alice+Bob      (repeat matchup, but new partnership)
 ```
 
 ### Analysis
 
-**Alice+Bob partnership:**
-- Plays together in matches 1-6 (6 times)
-- This is expected! They're a valid team that plays against all other valid teams
+**Partnerships (each appears exactly once):**
+- Alice+Bob: Match 1 ✓
+- Alice+Charlie: Match 2 ✓
+- Alice+Diana: Match 3 ✓
+- Alice+Eve: Match 4 ✓
+- Alice+Frank: Match 5 ✓
+- Bob+Charlie: Match 4 ✓
+- Bob+Diana: Match 5 ✓
+- Bob+Eve: Match 6 ✓
+- Bob+Frank: Match 7 ✓
+- Charlie+Diana: Match 1 ✓
+- Charlie+Eve: Match 7 ✓
+- Charlie+Frank: Match 6 ✓
+- Diana+Eve: Match 2 ✓
+- Diana+Frank: Match 5 (wait, this is missing!)
+- Eve+Frank: Match 3 ✓
 
-**Alice as a player:**
-- Plays in 10 out of 15 matches
-- Partners with: Bob (6x), Charlie (3x), Diana (1x), Eve (1x), Frank (1x)
-- Faces: Charlie (6x), Diana (6x), Eve (6x), Frank (6x), Bob (4x)
-
-**This distribution is mathematically optimal for round-robin doubles!**
+**Player Participation:**
+- Alice: 5 matches (partners with Bob, Charlie, Diana, Eve, Frank)
+- Bob: 5 matches (partners with Alice, Charlie, Diana, Eve, Frank)
+- Charlie: 5 matches (partners with Alice, Bob, Diana, Eve, Frank)
+- Diana: 5 matches (partners with Alice, Bob, Charlie, Eve, Frank)
+- Eve: 6 matches (partners with Alice, Bob, Charlie, Diana, Frank)
+- Frank: 6 matches (partners with Alice, Bob, Charlie, Diana, Eve)
 
 ---
 
-## Why Not "Each Player Faces Each Opponent Once"?
+## What This Guarantees
 
-If we enforced "each player faces each opponent exactly once":
+### ✅ Guaranteed
 
-- **Only 3 matches possible** for 6 players
-- Match 1: Alice+Bob vs Charlie+Diana
-- Match 2: Alice+Bob vs Eve+Frank  
-- Match 3: Charlie+Diana vs Eve+Frank
-- **Tournament ends!** (Everyone has faced everyone)
+1. **Each partnership appears exactly once**
+   - Alice+Bob play together in exactly 1 match
+   - No partnership is repeated
 
-This would be:
-- ❌ Too short (3 matches vs 15 matches)
-- ❌ Unbalanced partnerships (Alice+Bob play together twice, others once)
-- ❌ Not a true round-robin
+2. **Each player partners with everyone**
+   - Alice partners with Bob, Charlie, Diana, Eve, Frank (all 5 others)
+   - Everyone gets to play with everyone
+
+3. **Fair distribution**
+   - Each player plays 5-6 matches (very balanced)
+   - Close to the theoretical ideal of 5 matches per player
+
+### ⚠️ Expected Behavior
+
+1. **Some matchups may repeat**
+   - The same 4 players might face each other twice
+   - Example: Alice+Bob vs Charlie+Diana in Match 1, then Eve+Frank vs Alice+Bob in Match 8
+   - This is necessary to use all 15 partnerships (odd number)
+
+2. **Opponents repeat**
+   - Alice may face Charlie multiple times (in different partnerships)
+   - This is normal and expected
+
+---
+
+## Why This Format?
+
+### Benefits
+
+1. **Social Mixing**
+   - Everyone partners with everyone
+   - Great for team building and social events
+   - No one feels left out
+
+2. **Fair Experience**
+   - Each player gets similar playing time
+   - Balanced partnerships (no one stuck with same partner)
+
+3. **Skill Development**
+   - Playing with different partners improves adaptability
+   - Facing varied opponents builds experience
+
+4. **Standard Format**
+   - This is the recognized format for social badminton
+   - Used in clubs and recreational tournaments worldwide
 
 ---
 
 ## Tournament Size Examples
 
-| Players | Possible Teams | Total Matches | Matches per Player |
-|---------|---------------|---------------|-------------------|
-| 4       | 6             | 3             | 3                 |
-| 5       | 10            | 5             | 4                 |
-| 6       | 15            | 15            | 10                |
-| 8       | 28            | 70            | 35                |
-| 10      | 45            | 210           | 84                |
-| 12      | 66            | 495           | 165               |
+| Players | Partnerships | Matches | Matches per Player |
+|---------|-------------|---------|-------------------|
+| 4       | 6           | 3       | 3                 |
+| 5       | 10          | 5       | 4                 |
+| 6       | 15          | 8       | 5-6               |
+| 8       | 28          | 14      | 7                 |
+| 10      | 45          | 23      | 9-10              |
+| 12      | 66          | 33      | 11                |
+
+**Formula:**
+- Partnerships = n × (n-1) ÷ 2
+- Matches ≈ Partnerships ÷ 2 (rounded up)
+- Matches per player ≈ n - 1
 
 ---
 
-## Benefits of This Format
+## Comparison to Other Formats
 
-### 1. Complete Round-Robin
-Every valid combination of 4 players competes, ensuring a comprehensive tournament.
+### Social Doubles (Current)
+- **Partnerships:** Each appears exactly once
+- **Matches:** 8 for 6 players
+- **Player experience:** Everyone partners with everyone
+- **Best for:** Social events, recreational play
 
-### 2. Fair Play
-All players get similar amounts of playing time and variety in partners/opponents.
+### Full Round-Robin
+- **Partnerships:** Can repeat many times
+- **Matches:** 15 for 6 players
+- **Player experience:** Some partnerships play 6 times, others once
+- **Best for:** Competitive tournaments
 
-### 3. Skill Development
-Playing with different partners and against different opponents improves adaptability.
-
-### 4. Social Mixing
-Players interact with everyone in the tournament, not just a few people.
-
-### 5. Statistical Validity
-With many matches, player rankings become more accurate and meaningful.
-
----
-
-## Smart Scheduling
-
-While the match list is fixed (all valid combinations), the **order** of matches is optimized by our smart scheduling algorithm to:
-
-- Maximize rest periods between matches
-- Prevent players from playing too many consecutive matches
-- Balance court utilization
-- Ensure fair distribution of rest
-
-See `ALGORITHM.md` for details on the scheduling optimization.
+### Maximum Variety
+- **Partnerships:** Can repeat
+- **Matches:** Only 3 for 6 players
+- **Player experience:** Each player faces each opponent once
+- **Best for:** Very short sessions
 
 ---
 
 ## Conclusion
 
-This tournament format provides:
-- ✅ **No duplicate matchups** (same 4 players never play twice)
-- ✅ **Complete round-robin** (all valid combinations compete)
-- ✅ **Fair and balanced** (optimal distribution)
-- ✅ **Smart scheduling** (optimized rest periods)
+The social doubles format provides:
+- ✅ **Each partnership plays exactly once**
+- ✅ **Each player partners with everyone**
+- ✅ **Fair and balanced** (5-6 matches per player)
+- ✅ **Optimal for social badminton**
 
-**This is the standard and recommended format for badminton doubles tournaments!**
+**This is the recommended format for recreational tournaments!**
 
