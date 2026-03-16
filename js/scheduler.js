@@ -7,61 +7,113 @@ export class MatchScheduler {
   }
 
   generateMatches(courtCount = 2) {
-    const teams = this.generateAllTeams();
-    const matches = this.createMatches(teams);
+    // Use social doubles format: each player partners with each other player exactly once
+    const matches = this.createSocialDoublesMatches();
     const optimizedMatches = this.optimizeForRest(matches, courtCount);
     return optimizedMatches;
   }
 
-  generateAllTeams() {
-    const teams = [];
+  createSocialDoublesMatches() {
+    // Generate all possible partnerships
+    const allPartnerships = [];
     for (let i = 0; i < this.players.length; i++) {
       for (let j = i + 1; j < this.players.length; j++) {
-        teams.push({
+        allPartnerships.push({
           player1: this.players[i],
-          player2: this.players[j]
+          player2: this.players[j],
+          key: `${this.players[i].id}-${this.players[j].id}`,
+          playerIds: [this.players[i].id, this.players[j].id]
         });
       }
     }
-    return teams;
-  }
 
-  createMatches(teams) {
+    // Create matches using greedy matching to maximize partnership usage
     const matches = [];
-    const usedMatchups = new Set(); // Track full matchups (e.g., "1-2-3-4")
+    const usedPartnerships = new Set();
+    const usedMatchups = new Set();
 
-    for (let i = 0; i < teams.length; i++) {
-      for (let j = i + 1; j < teams.length; j++) {
-        const team1 = teams[i];
-        const team2 = teams[j];
+    // Keep trying to create matches until we can't anymore
+    let attempts = 0;
+    const maxAttempts = allPartnerships.length * 2;
+
+    while (usedPartnerships.size < allPartnerships.length && attempts < maxAttempts) {
+      attempts++;
+
+      // Find first unused partnership
+      let team1 = null;
+      for (const p of allPartnerships) {
+        if (!usedPartnerships.has(p.key)) {
+          team1 = p;
+          break;
+        }
+      }
+
+      if (!team1) break;
+
+      // Find a compatible opponent team (unused partnership, no shared players)
+      let team2 = null;
+      for (const p of allPartnerships) {
+        if (usedPartnerships.has(p.key)) continue;
+        if (p.key === team1.key) continue;
 
         // Check if teams share a player
-        if (this.teamsSharePlayer(team1, team2)) continue;
+        const sharesPlayer = team1.playerIds.some(id => p.playerIds.includes(id));
+        if (sharesPlayer) continue;
 
-        // Create matchup key (all 4 players)
-        const matchupKey = [
-          team1.player1.id,
-          team1.player2.id,
-          team2.player1.id,
-          team2.player2.id
-        ].sort().join('-');
-
-        // Skip if this exact matchup already exists
+        // Check if this matchup already exists
+        const matchupKey = [...team1.playerIds, ...p.playerIds].sort().join('-');
         if (usedMatchups.has(matchupKey)) continue;
 
-        // Add the match
+        team2 = p;
+        break;
+      }
+
+      if (team2) {
+        // Create the match
+        const matchupKey = [...team1.playerIds, ...team2.playerIds].sort().join('-');
+
         matches.push({
           id: this.generateId(),
-          team1,
-          team2,
+          team1: { player1: team1.player1, player2: team1.player2 },
+          team2: { player1: team2.player1, player2: team2.player2 },
           team1Score: null,
           team2Score: null,
           status: 'pending',
           courtNumber: null
         });
 
-        // Mark matchup as used
+        usedPartnerships.add(team1.key);
+        usedPartnerships.add(team2.key);
         usedMatchups.add(matchupKey);
+      }
+    }
+
+    // Handle remaining unused partnerships by creating additional matches
+    // (some matchups may repeat, but all partnerships will be used)
+    for (const p1 of allPartnerships) {
+      if (usedPartnerships.has(p1.key)) continue;
+
+      // Find any compatible opponent (even if it creates a repeat matchup)
+      for (const p2 of allPartnerships) {
+        if (p1.key === p2.key) continue;
+
+        // Check if teams share a player
+        const sharesPlayer = p1.playerIds.some(id => p2.playerIds.includes(id));
+        if (sharesPlayer) continue;
+
+        // Create the match (even if matchup repeats)
+        matches.push({
+          id: this.generateId(),
+          team1: { player1: p1.player1, player2: p1.player2 },
+          team2: { player1: p2.player1, player2: p2.player2 },
+          team1Score: null,
+          team2Score: null,
+          status: 'pending',
+          courtNumber: null
+        });
+
+        usedPartnerships.add(p1.key);
+        break; // Move to next unused partnership
       }
     }
 
