@@ -2,5 +2,54 @@
    Component Styles
    =========================== */
 
-/* Placeholder for component styles */
+/* ===========================
+   Background Blobs
+   =========================== */
+
+.blobs-container {
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  z-index: -1;
+}
+
+.blob {
+  position: absolute;
+  width: 60vh;
+  height: 60vh;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.1;
+}
+
+.blob-1 {
+  background-color: var(--clay-emerald);
+  top: -10%;
+  left: -10%;
+  animation: clay-float 8s ease-in-out infinite;
+}
+
+.blob-2 {
+  background-color: var(--clay-violet);
+  top: 20%;
+  right: -10%;
+  animation: clay-float-delayed 10s ease-in-out infinite;
+}
+
+@media (min-width: 768px) {
+  .blobs-container::after {
+    content: '';
+    position: absolute;
+    width: 50vh;
+    height: 50vh;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.1;
+    background-color: var(--clay-sky);
+    bottom: -10%;
+    left: 30%;
+    animation: clay-float-slow 12s ease-in-out infinite;
+  }
+}
 

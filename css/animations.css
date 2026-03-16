@@ -2,5 +2,46 @@
    Clay Animations
    =========================== */
 
-/* Placeholder for animations */
+@keyframes clay-float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-20px) rotate(2deg); }
+}
+
+@keyframes clay-float-delayed {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-15px) rotate(-2deg); }
+}
+
+@keyframes clay-float-slow {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-30px) rotate(5deg); }
+}
+
+@keyframes clay-breathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+}
+
+@keyframes slide-up {
+  from { transform: translateY(100%); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-10px); }
+  75% { transform: translateX(10px); }
+}
+
+.animate-float { animation: clay-float 8s ease-in-out infinite; }
+.animate-float-delayed { animation: clay-float-delayed 10s ease-in-out infinite; }
+.animate-breathe { animation: clay-breathe 6s ease-in-out infinite; }
+.animate-slide-up { animation: slide-up 500ms ease-out forwards; }
+.animate-fade-in { animation: fade-in 300ms ease-out forwards; }
+.animate-shake { animation: shake 300ms ease-out; }
 
