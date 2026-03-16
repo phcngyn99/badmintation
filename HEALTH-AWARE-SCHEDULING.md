@@ -49,10 +49,10 @@ This creates balanced, competitive matches.
 - Charlie, Diana rest (they just played)
 - Alice and Bob are separated (they just partnered)
 
-**Match 3: Charlie+Diana vs Eve+Frank**
-- Charlie (rested 1 match) + Diana (rested 1 match)
-- Eve (just played) + Frank (just played)
-- Alice, Bob rest (they've played 2 consecutive matches)
+**Match 3: Charlie+Eve vs Diana+Frank**
+- Charlie (rested 1 match) + Eve (just played) = **Balanced team**
+- Diana (rested 1 match) + Frank (just played) = **Balanced team**
+- Alice, Bob rest (they've played 2 matches)
 
 This pattern continues, ensuring:
 - ✅ No player plays too many consecutive matches
