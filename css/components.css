@@ -53,3 +53,113 @@
   }
 }
 
+/* ===========================
+   Hero Header
+   =========================== */
+
+.hero {
+  text-align: center;
+  padding: var(--spacing-xl) 0;
+  position: relative;
+}
+
+.hero-title {
+  font-size: 2.25rem;
+  font-weight: 900;
+  letter-spacing: -0.025em;
+  margin-bottom: var(--spacing-sm);
+  background: linear-gradient(135deg, var(--clay-foreground) 20%, var(--clay-emerald) 60%, var(--clay-violet) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero-subtitle {
+  font-size: 0.875rem;
+  color: var(--clay-muted);
+  font-weight: 500;
+}
+
+@media (min-width: 768px) {
+  .hero-title { font-size: 3rem; }
+  .hero-subtitle { font-size: 1rem; }
+}
+
+@media (min-width: 1024px) {
+  .hero-title { font-size: 3.75rem; }
+  .hero-subtitle { font-size: 1.125rem; }
+}
+
+/* ===========================
+   Buttons
+   =========================== */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  border: none;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  text-decoration: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.btn-md {
+  height: 3.5rem;
+  padding: 0 var(--spacing-xl);
+  font-size: 1rem;
+  border-radius: var(--radius-lg);
+}
+
+.btn-lg {
+  height: 4rem;
+  padding: 0 var(--spacing-2xl);
+  font-size: 1.125rem;
+  border-radius: var(--radius-lg);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--clay-emerald-light), var(--clay-emerald));
+  color: white;
+  box-shadow: var(--shadow-clay-button);
+}
+
+.btn-primary:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-clay-button-hover);
+}
+
+.btn-primary:active {
+  transform: scale(0.92);
+  box-shadow: var(--shadow-clay-pressed);
+}
+
+.btn-secondary {
+  background: linear-gradient(135deg, var(--clay-violet-light), var(--clay-violet));
+  color: white;
+  box-shadow: var(--shadow-clay-button);
+}
+
+.btn-secondary:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-clay-button-hover);
+}
+
+.btn-secondary:active {
+  transform: scale(0.92);
+  box-shadow: var(--shadow-clay-pressed);
+}
+
+.btn-full {
+  width: 100%;
+}
+
+@media (min-width: 640px) {
+  .btn-full { width: auto; }
+}
+
