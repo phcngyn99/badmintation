@@ -89,23 +89,41 @@ export class MatchScheduler {
     }
 
     // Handle remaining unused partnerships by creating additional matches
-    // (some matchups may repeat, but all partnerships will be used)
+    // Try to pair unused partnerships together first, then allow repeats if needed
     for (const p1 of allPartnerships) {
       if (usedPartnerships.has(p1.key)) continue;
 
-      // Find any compatible opponent (even if it creates a repeat matchup)
+      // First, try to find another unused partnership
+      let team2 = null;
       for (const p2 of allPartnerships) {
+        if (usedPartnerships.has(p2.key)) continue; // Prefer unused
         if (p1.key === p2.key) continue;
 
-        // Check if teams share a player
         const sharesPlayer = p1.playerIds.some(id => p2.playerIds.includes(id));
         if (sharesPlayer) continue;
 
-        // Create the match (even if matchup repeats)
+        team2 = p2;
+        break;
+      }
+
+      // If no unused partnership found, find any compatible opponent
+      if (!team2) {
+        for (const p2 of allPartnerships) {
+          if (p1.key === p2.key) continue;
+
+          const sharesPlayer = p1.playerIds.some(id => p2.playerIds.includes(id));
+          if (sharesPlayer) continue;
+
+          team2 = p2;
+          break;
+        }
+      }
+
+      if (team2) {
         matches.push({
           id: this.generateId(),
           team1: { player1: p1.player1, player2: p1.player2 },
-          team2: { player1: p2.player1, player2: p2.player2 },
+          team2: { player1: team2.player1, player2: team2.player2 },
           team1Score: null,
           team2Score: null,
           status: 'pending',
@@ -113,7 +131,9 @@ export class MatchScheduler {
         });
 
         usedPartnerships.add(p1.key);
-        break; // Move to next unused partnership
+        if (!usedPartnerships.has(team2.key)) {
+          usedPartnerships.add(team2.key);
+        }
       }
     }
 
