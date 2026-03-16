@@ -35,7 +35,11 @@ export class MatchScheduler {
 
     let matchIndex = 0;
 
-    while (usedPartnerships.size < allPartnerships.length) {
+    // Calculate max matches: each match uses 2 partnerships
+    // For odd number of partnerships, we use (n-1) to ensure each player plays equal matches
+    const maxMatches = Math.floor(allPartnerships.length / 2);
+
+    while (usedPartnerships.size < allPartnerships.length && matchIndex < maxMatches) {
       // Find best team1 (prefer BALANCED team: one tired + one rested)
       let bestTeam1 = null;
       let bestTeam1Score = -Infinity;
