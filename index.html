@@ -76,23 +76,54 @@
 
     <!-- Court Display (Tournament Active) -->
     <section id="courtDisplay" class="section hidden">
-      <!-- Content added in later tasks -->
+      <h2 class="section-title">Courts</h2>
+      <div id="courtsContainer" class="courts-grid">
+        <!-- Courts added dynamically -->
+      </div>
     </section>
 
     <!-- Match Queue -->
     <section id="matchQueue" class="section hidden">
-      <!-- Content added in later tasks -->
+      <button id="queueToggle" class="queue-toggle">
+        <span>Next Matches</span>
+        <span id="queueCount" class="queue-count">(0)</span>
+        <span class="chevron">▼</span>
+      </button>
+      <div id="queueList" class="queue-list hidden">
+        <!-- Matches added dynamically -->
+      </div>
     </section>
 
     <!-- Leaderboard Modal -->
     <div id="leaderboardModal" class="modal hidden">
-      <!-- Content added in later tasks -->
+      <div class="modal-backdrop"></div>
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title">Leaderboard</h2>
+          <button id="closeLeaderboard" class="btn-close">×</button>
+        </div>
+        <div class="modal-body">
+          <table id="leaderboardTable" class="leaderboard-table">
+            <thead>
+              <tr>
+                <th>Rank</th>
+                <th>Player</th>
+                <th class="sortable" data-sort="wins">Wins</th>
+                <th class="sortable" data-sort="winPercentage">Win %</th>
+                <th class="sortable" data-sort="pointsScored">Points</th>
+              </tr>
+            </thead>
+            <tbody id="leaderboardBody">
+              <!-- Rows added dynamically -->
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
 
-    <!-- Settings Menu -->
-    <div id="settingsMenu" class="menu hidden">
-      <!-- Content added in later tasks -->
-    </div>
+    <button id="leaderboardTab" class="leaderboard-tab hidden">
+      View Leaderboard
+    </button>
   </div>
 
   <!-- JavaScript Modules -->
