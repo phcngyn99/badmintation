@@ -40,24 +40,29 @@ export class MatchScheduler {
     const targetPartnerships = allPartnerships.length;
 
     while (usedPartnerships.size < targetPartnerships && matchIndex < 20) {
-      // Find best team1 (prefer BALANCED team: one tired + one rested)
+      // Find best team1 (prefer well-rested players, avoid overusing same players)
       let bestTeam1 = null;
       let bestTeam1Score = -Infinity;
+
+      // Count how many times each player has been used
+      const playerUsageCount = new Map();
+      this.players.forEach(p => playerUsageCount.set(p.id, 0));
+      usedPartnerships.forEach(key => {
+        const [p1, p2] = key.split('-');
+        playerUsageCount.set(p1, playerUsageCount.get(p1) + 1);
+        playerUsageCount.set(p2, playerUsageCount.get(p2) + 1);
+      });
 
       for (const p of allPartnerships) {
         if (usedPartnerships.has(p.key)) continue;
 
         const rest1 = matchIndex - playerLastMatch.get(p.player1.id) - 1;
         const rest2 = matchIndex - playerLastMatch.get(p.player2.id) - 1;
-        const minRest = Math.min(rest1, rest2);
-        const maxRest = Math.max(rest1, rest2);
+        const usage1 = playerUsageCount.get(p.player1.id);
+        const usage2 = playerUsageCount.get(p.player2.id);
 
-        let score = rest1 + rest2;
-
-        // STRONG preference for balanced teams (one tired, one rested)
-        if (minRest === 0 && maxRest >= 1) {
-          score += 10000; // Highest priority
-        }
+        // Score: prefer high rest AND low usage (balance player participation)
+        let score = (rest1 + rest2) * 100 - (usage1 + usage2) * 50;
 
         if (score > bestTeam1Score) {
           bestTeam1Score = score;
@@ -71,11 +76,10 @@ export class MatchScheduler {
       let bestTeam2 = null;
       let bestTeam2Score = -Infinity;
 
-      // Calculate team1's fatigue profile
+      // Calculate team1's total rest (health)
       const team1Rest1 = matchIndex - playerLastMatch.get(bestTeam1.player1.id) - 1;
       const team1Rest2 = matchIndex - playerLastMatch.get(bestTeam1.player2.id) - 1;
-      const team1MinRest = Math.min(team1Rest1, team1Rest2);
-      const team1MaxRest = Math.max(team1Rest1, team1Rest2);
+      const team1TotalRest = team1Rest1 + team1Rest2;
 
       for (const p of allPartnerships) {
         if (usedPartnerships.has(p.key)) continue;
@@ -88,31 +92,19 @@ export class MatchScheduler {
         // Calculate rest for this team
         const rest1 = matchIndex - playerLastMatch.get(p.player1.id) - 1;
         const rest2 = matchIndex - playerLastMatch.get(p.player2.id) - 1;
-        const minRest = Math.min(rest1, rest2);
-        const maxRest = Math.max(rest1, rest2);
+        const team2TotalRest = rest1 + rest2;
 
-        // REQUIRE balanced teams: both teams should have similar fatigue profiles
-        // If team1 has (0,1), team2 should also have (0,1) or similar
-        // Avoid (0,1) vs (2,2) or (0,0) vs (1,1)
+        // Balance means: total rest of team1 = total rest of team2
+        const restDifference = Math.abs(team1TotalRest - team2TotalRest);
 
-        let score = rest1 + rest2;
+        // Score based on how close the total rest is
+        let score = 10000 - restDifference * 1000; // Heavy penalty for rest difference
 
-        // REQUIRE both teams to have balanced fatigue (one tired + one rested)
-        if (minRest === 0 && maxRest >= 1) {
-          // This team is balanced
-          if (team1MinRest === 0 && team1MaxRest >= 1) {
-            score += 10000; // Both teams balanced - PERFECT!
-          } else {
-            score -= 5000; // Team1 not balanced, avoid this pairing
-          }
-        } else {
-          // This team is NOT balanced
-          if (team1MinRest === 0 && team1MaxRest >= 1) {
-            score -= 5000; // Team1 balanced but team2 not, avoid
-          } else {
-            // Neither team balanced - last resort
-            score += 0;
-          }
+        // Bonus for exact match
+        if (restDifference === 0) {
+          score += 50000; // PERFECT BALANCE!
+        } else if (restDifference === 1) {
+          score += 10000; // Very close
         }
 
         if (score > bestTeam2Score) {
