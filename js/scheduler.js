@@ -28,7 +28,7 @@ export class MatchScheduler {
 
   createMatches(teams) {
     const matches = [];
-    const usedPairings = new Set();
+    const usedMatchups = new Set(); // Track full matchups (e.g., "1-2-3-4")
 
     for (let i = 0; i < teams.length; i++) {
       for (let j = i + 1; j < teams.length; j++) {
@@ -38,10 +38,18 @@ export class MatchScheduler {
         // Check if teams share a player
         if (this.teamsSharePlayer(team1, team2)) continue;
 
-        // Create unique pairing key
-        const pairingKey = this.getPairingKey(team1, team2);
-        if (usedPairings.has(pairingKey)) continue;
+        // Create matchup key (all 4 players)
+        const matchupKey = [
+          team1.player1.id,
+          team1.player2.id,
+          team2.player1.id,
+          team2.player2.id
+        ].sort().join('-');
 
+        // Skip if this exact matchup already exists
+        if (usedMatchups.has(matchupKey)) continue;
+
+        // Add the match
         matches.push({
           id: this.generateId(),
           team1,
@@ -52,7 +60,8 @@ export class MatchScheduler {
           courtNumber: null
         });
 
-        usedPairings.add(pairingKey);
+        // Mark matchup as used
+        usedMatchups.add(matchupKey);
       }
     }
 
