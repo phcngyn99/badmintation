@@ -1,8 +1,10 @@
 // js/main.js
 
-import { TournamentState } from './state.js';
+import { UIController } from './ui.js';
 
-// Temporary test
-const state = new TournamentState();
-console.log('State initialized:', state);
+// Initialize app when DOM is ready
+document.addEventListener('DOMContentLoaded', () => {
+  window.uiController = new UIController();
+  console.log('Badminton Tournament Manager initialized');
+});
 
