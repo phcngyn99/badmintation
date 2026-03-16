@@ -43,8 +43,8 @@ export class MatchScheduler {
       for (const p of allPartnerships) {
         if (usedPartnerships.has(p.key)) continue;
 
-        const rest1 = matchIndex - playerLastMatch.get(p.player1.id);
-        const rest2 = matchIndex - playerLastMatch.get(p.player2.id);
+        const rest1 = matchIndex - playerLastMatch.get(p.player1.id) - 1;
+        const rest2 = matchIndex - playerLastMatch.get(p.player2.id) - 1;
         const minRest = Math.min(rest1, rest2);
         const maxRest = Math.max(rest1, rest2);
 
@@ -68,8 +68,8 @@ export class MatchScheduler {
       let bestTeam2Score = -Infinity;
 
       // Calculate team1's fatigue profile
-      const team1Rest1 = matchIndex - playerLastMatch.get(bestTeam1.player1.id);
-      const team1Rest2 = matchIndex - playerLastMatch.get(bestTeam1.player2.id);
+      const team1Rest1 = matchIndex - playerLastMatch.get(bestTeam1.player1.id) - 1;
+      const team1Rest2 = matchIndex - playerLastMatch.get(bestTeam1.player2.id) - 1;
       const team1MinRest = Math.min(team1Rest1, team1Rest2);
       const team1MaxRest = Math.max(team1Rest1, team1Rest2);
 
@@ -82,8 +82,8 @@ export class MatchScheduler {
         if (sharesPlayer) continue;
 
         // Calculate rest for this team
-        const rest1 = matchIndex - playerLastMatch.get(p.player1.id);
-        const rest2 = matchIndex - playerLastMatch.get(p.player2.id);
+        const rest1 = matchIndex - playerLastMatch.get(p.player1.id) - 1;
+        const rest2 = matchIndex - playerLastMatch.get(p.player2.id) - 1;
         const minRest = Math.min(rest1, rest2);
         const maxRest = Math.max(rest1, rest2);
 
