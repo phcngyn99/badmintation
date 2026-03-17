@@ -305,10 +305,10 @@ export class MatchScheduler {
     }
 
     // Step 2: Calculate optimal courts
-    // Target: ~4 hours (16 rounds max at 15 min/round)
-    // Formula: courts = ceil(total_matches / 16) but max 6
+    // Target: ~3 hours (12 rounds max at 15 min/round)
+    // Formula: courts = ceil(total_matches / 12) but max 6
     const totalMatches = pairs.length * (pairs.length - 1) / 2;
-    const targetRounds = 16; // ~4 hours
+    const targetRounds = 12; // ~3 hours
     const optimalCourts = Math.ceil(totalMatches / targetRounds);
     const courts = Math.min(6, Math.max(1, optimalCourts));
 
