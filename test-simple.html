@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Simple Test</title>
+</head>
+<body>
+  <h1>Test Add Player</h1>
+  <input type="text" id="playerNameInput" placeholder="Enter name">
+  <button id="addPlayerBtn">Add Player</button>
+  <div id="output"></div>
+  
+  <script type="module">
+    import { TournamentState } from './js/state.js';
+    
+    const state = new TournamentState();
+    const output = document.getElementById('output');
+    
+    state.subscribe(() => {
+      const players = state.getPlayers();
+      output.innerHTML = '<h2>Players:</h2><ul>' + 
+        players.map(p => `<li>${p.avatar} ${p.name}</li>`).join('') + 
+        '</ul>';
+    });
+    
+    document.getElementById('addPlayerBtn').addEventListener('click', () => {
+      const input = document.getElementById('playerNameInput');
+      const name = input.value.trim();
+      console.log('Adding:', name);
+      
+      if (name) {
+        state.addPlayer(name);
+        input.value = '';
+        console.log('Total players:', state.getPlayers().length);
+      }
+    });
+    
+    console.log('Test page loaded');
+  </script>
+</body>
+</html>

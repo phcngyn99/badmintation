@@ -18,75 +18,267 @@ export class UIController {
     document.getElementById('playerNameInput').addEventListener('keypress', (e) => {
       if (e.key === 'Enter') this.handleAddPlayer();
     });
-    
+
     // Tournament control
     document.getElementById('startTournamentBtn').addEventListener('click', () => this.handleStartTournament());
-    
+
+    // Mode switch
+    document.querySelectorAll('input[name="tournamentMode"]').forEach(radio => {
+      radio.addEventListener('change', () => this.updateModePreview());
+    });
+
     // Leaderboard
     document.getElementById('leaderboardTab').addEventListener('click', () => this.showLeaderboard());
     document.getElementById('closeLeaderboard').addEventListener('click', () => this.hideLeaderboard());
     document.querySelector('.modal-backdrop').addEventListener('click', () => this.hideLeaderboard());
-    
+
     // Queue toggle
     document.getElementById('queueToggle').addEventListener('click', () => this.toggleQueue());
   }
 
   handleAddPlayer() {
-    const input = document.getElementById('playerNameInput');
-    const name = input.value.trim();
-    
-    if (!name) {
-      this.showError(input, 'Please enter a player name');
-      return;
+    try {
+      const input = document.getElementById('playerNameInput');
+      const name = input.value.trim();
+
+      if (!name) {
+        this.showError(input, 'Please enter a player name');
+        return;
+      }
+
+      if (name.length < 2) {
+        this.showError(input, 'Name must be at least 2 characters');
+        return;
+      }
+
+      this.state.addPlayer(name);
+      input.value = '';
+      input.focus();
+    } catch (error) {
+      console.error('Error adding player:', error);
+      alert('Error adding player: ' + error.message);
     }
-    
-    if (name.length < 2) {
-      this.showError(input, 'Name must be at least 2 characters');
-      return;
-    }
-    
-    this.state.addPlayer(name);
-    input.value = '';
-    input.focus();
   }
 
   handleStartTournament() {
     const players = this.state.getPlayers();
-    
+
     if (players.length < 4) {
       alert('Minimum 4 players required for doubles tournament');
       return;
     }
-    
+
     const courtCount = parseInt(document.getElementById('courtCount').value);
+    // Get selected mode from radio buttons
+    const mode = document.querySelector('input[name="tournamentMode"]:checked').value;
+
+    console.log('Starting tournament with mode:', mode, 'players:', players.length);
 
     // Generate matches with court count for optimal rest scheduling
-    const scheduler = new MatchScheduler(players);
+    const scheduler = new MatchScheduler(players, mode);
     const matches = scheduler.generateMatches(courtCount);
 
+    console.log('Generated matches:', matches.length);
+
     this.state.setMatches(matches);
+    this.state.setTournamentMode(mode);
     this.state.startTournament(courtCount);
   }
 
   renderPlayerManagement() {
-    const players = this.state.getPlayers();
-    const roster = document.getElementById('playerRoster');
-    const setup = document.getElementById('tournamentSetup');
-    
-    roster.innerHTML = players.map(player => `
-      <div class="player-card animate-fade-in">
-        <span class="player-name">${this.escapeHtml(player.name)}</span>
-        <button class="btn-remove" data-player-id="${player.id}" onclick="window.uiController.removePlayer('${player.id}')">
-          ×
-        </button>
-      </div>
-    `).join('');
-    
-    // Show/hide tournament setup
-    if (players.length >= 4) {
-      setup.classList.remove('hidden');
+    try {
+      const players = this.state.getPlayers();
+      const roster = document.getElementById('playerRoster');
+      const setup = document.getElementById('tournamentSetup');
+      const playerCountEl = document.getElementById('playerCount');
+
+      if (!roster || !setup || !playerCountEl) {
+        console.error('Required elements not found');
+        return;
+      }
+
+      // Update player count badge
+      playerCountEl.textContent = players.length;
+
+      roster.innerHTML = players.map(player => `
+        <div class="player-card animate-fade-in">
+          <div class="player-info">
+            <span class="player-avatar">${player.avatar || '👤'}</span>
+            <span class="player-name">${this.escapeHtml(player.name)}</span>
+          </div>
+          <button class="btn-remove" data-player-id="${player.id}" onclick="window.uiController.removePlayer('${player.id}')">
+            ×
+          </button>
+        </div>
+      `).join('');
+
+      // Show/hide tournament setup
+      if (players.length >= 4) {
+        setup.classList.remove('hidden');
+        this.updateMatchCounts(players);
+        this.updateModePreview();
+      } else {
+        setup.classList.add('hidden');
+      }
+    } catch (error) {
+      console.error('Error rendering player management:', error);
+    }
+  }
+
+  updateMatchCounts(players) {
+    const balancedCountEl = document.getElementById('balancedMatchCount');
+    const randomCountEl = document.getElementById('randomMatchCount');
+    const courtCountInput = document.getElementById('courtCount');
+    const courtHintEl = document.getElementById('courtHint');
+
+    if (!balancedCountEl || !randomCountEl || !courtCountInput || !players || players.length < 4) return;
+
+    // Calculate maximum courts based on player count
+    // Each doubles match needs 4 players
+    const maxCourts = Math.floor(players.length / 4);
+    const constrainedMaxCourts = Math.max(1, Math.min(maxCourts, 4)); // Between 1-4
+
+    // Update court input constraints
+    courtCountInput.max = constrainedMaxCourts;
+
+    // Update hint text
+    if (courtHintEl) {
+      courtHintEl.textContent = `(max ${constrainedMaxCourts})`;
+    }
+
+    // If current value exceeds max, adjust it
+    if (parseInt(courtCountInput.value) > constrainedMaxCourts) {
+      courtCountInput.value = constrainedMaxCourts;
+    }
+
+    // Calculate balanced mode matches
+    const balancedScheduler = new MatchScheduler(players, 'balanced');
+    const allMatches = balancedScheduler.generateMatches(courtCount);
+    const optionalMatches = allMatches.filter(m => m.isOptional).length;
+    const requiredMatches = allMatches.length - optionalMatches;
+
+    // Calculate random mode matches (based on player count)
+    const randomMatches = this.calculateRandomMatches(players.length);
+
+    // Update the UI - for Round-Robin, show all partnerships
+    if (optionalMatches > 0) {
+      balancedCountEl.textContent = `${requiredMatches} + ${optionalMatches} optional`;
     } else {
-      setup.classList.add('hidden');
+      balancedCountEl.textContent = `${allMatches.length} matches`;
+    }
+
+    randomCountEl.textContent = `${randomMatches} matches`;
+
+    // Update match preview
+    this.updateMatchPreview(players);
+  }
+
+  calculateRandomMatches(playerCount) {
+    // For random mode, calculate reasonable number of matches
+    // Each match uses 4 players, so we want enough matches for variety
+    // Formula: aim for each player to play 6-8 matches
+    const targetMatchesPerPlayer = 7;
+    const totalPlayerSlots = targetMatchesPerPlayer * playerCount;
+    const matches = Math.floor(totalPlayerSlots / 4);
+
+    return Math.min(matches, 30); // Cap at 30 matches
+  }
+
+  updateMatchPreview(players) {
+    const previewListEl = document.getElementById('matchPreviewList');
+    const previewCountEl = document.getElementById('previewMatchCount');
+
+    if (!previewListEl || !previewCountEl || !players || players.length < 4) {
+      return;
+    }
+
+    // Get selected mode
+    const mode = document.querySelector('input[name="tournamentMode"]:checked')?.value || 'balanced';
+    const courtCount = parseInt(document.getElementById('courtCount')?.value || 1);
+
+    // Generate preview matches
+    const scheduler = new MatchScheduler(players, mode);
+    const matches = scheduler.generateMatches(courtCount);
+
+    // Update count
+    const optionalCount = matches.filter(m => m.isOptional).length;
+    const requiredCount = matches.length - optionalCount;
+
+    if (optionalCount > 0) {
+      previewCountEl.textContent = `${requiredCount} matches + ${optionalCount} optional`;
+    } else {
+      previewCountEl.textContent = `${matches.length} matches`;
+    }
+
+    // Display first 10 matches as preview
+    const previewMatches = matches.slice(0, 10);
+
+    previewListEl.innerHTML = previewMatches.map((match, index) => {
+      const optionalBadge = match.isOptional ? '<span class="optional-badge">Optional</span>' : '';
+
+      // Sort players within each team by rest (most rested on left, just played on right)
+      const getRestValue = (restStr) => {
+        if (restStr === 'Fresh') return Infinity;
+        const match = restStr.match(/(\d+) rest/);
+        return match ? parseInt(match[1]) : 0;
+      };
+
+      // Team 1 players with rest values
+      const team1Players = [
+        { player: match.team1.player1, rest: match.restInfo ? getRestValue(match.restInfo.team1[0]) : 0 },
+        { player: match.team1.player2, rest: match.restInfo ? getRestValue(match.restInfo.team1[1]) : 0 }
+      ];
+
+      // Team 2 players with rest values
+      const team2Players = [
+        { player: match.team2.player1, rest: match.restInfo ? getRestValue(match.restInfo.team2[0]) : 0 },
+        { player: match.team2.player2, rest: match.restInfo ? getRestValue(match.restInfo.team2[1]) : 0 }
+      ];
+
+      // Sort each team by rest (ascending - just played first, most rested last)
+      team1Players.sort((a, b) => a.rest - b.rest);
+      team2Players.sort((a, b) => a.rest - b.rest);
+
+      return `
+        <div class="match-preview-item ${match.healthWarning ? 'health-warning' : ''}">
+          <span class="match-preview-number">${index + 1}</span>
+          <span class="match-preview-teams">
+            <span class="match-preview-team">
+              <span class="player-avatar-small">${team1Players[0].player.avatar || '👤'}</span>
+              ${this.escapeHtml(team1Players[0].player.name)}
+              -
+              <span class="player-avatar-small">${team1Players[1].player.avatar || '👤'}</span>
+              ${this.escapeHtml(team1Players[1].player.name)}
+            </span>
+            <span class="match-preview-vs">vs</span>
+            <span class="match-preview-team">
+              <span class="player-avatar-small">${team2Players[0].player.avatar || '👤'}</span>
+              ${this.escapeHtml(team2Players[0].player.name)}
+              -
+              <span class="player-avatar-small">${team2Players[1].player.avatar || '👤'}</span>
+              ${this.escapeHtml(team2Players[1].player.name)}
+            </span>
+          </span>
+          ${optionalBadge}
+        </div>
+      `;
+    }).join('');
+
+    // Add "show more" indicator if there are more matches
+    if (matches.length > 10) {
+      previewListEl.innerHTML += `
+        <div class="match-preview-item" style="justify-content: center; color: var(--clay-muted); font-style: italic;">
+          ... and ${matches.length - 10} more matches
+        </div>
+      `;
+    }
+  }
+
+  updateModePreview() {
+    // Trigger match preview update when mode changes
+    const players = this.state.getPlayers();
+    if (players.length >= 4) {
+      this.updateMatchPreview(players);
     }
   }
 
@@ -164,14 +356,26 @@ export class UIController {
 
       <div class="team-display">
         <div class="team-label">Team 1</div>
-        <div class="team-players">${this.escapeHtml(match.team1.player1.name)} + ${this.escapeHtml(match.team1.player2.name)}</div>
+        <div class="team-players">
+          <span class="player-avatar-small">${match.team1.player1.avatar || '👤'}</span>
+          ${this.escapeHtml(match.team1.player1.name)}
+          -
+          <span class="player-avatar-small">${match.team1.player2.avatar || '👤'}</span>
+          ${this.escapeHtml(match.team1.player2.name)}
+        </div>
       </div>
 
       <div class="vs-divider">VS</div>
 
       <div class="team-display">
         <div class="team-label">Team 2</div>
-        <div class="team-players">${this.escapeHtml(match.team2.player1.name)} + ${this.escapeHtml(match.team2.player2.name)}</div>
+        <div class="team-players">
+          <span class="player-avatar-small">${match.team2.player1.avatar || '👤'}</span>
+          ${this.escapeHtml(match.team2.player1.name)}
+          -
+          <span class="player-avatar-small">${match.team2.player2.avatar || '👤'}</span>
+          ${this.escapeHtml(match.team2.player2.name)}
+        </div>
       </div>
 
       <div class="score-inputs">
@@ -243,9 +447,16 @@ export class UIController {
     listEl.innerHTML = upcoming.map((match, index) => `
       <div class="queue-item">
         <div class="queue-item-teams">
-          ${index + 1}. ${this.escapeHtml(match.team1.player1.name)} + ${this.escapeHtml(match.team1.player2.name)}
+          ${index + 1}.
+          <span class="player-avatar-small">${match.team1.player1.avatar || '👤'}</span>
+          ${this.escapeHtml(match.team1.player1.name)} -
+          <span class="player-avatar-small">${match.team1.player2.avatar || '👤'}</span>
+          ${this.escapeHtml(match.team1.player2.name)}
           vs
-          ${this.escapeHtml(match.team2.player1.name)} + ${this.escapeHtml(match.team2.player2.name)}
+          <span class="player-avatar-small">${match.team2.player1.avatar || '👤'}</span>
+          ${this.escapeHtml(match.team2.player1.name)} -
+          <span class="player-avatar-small">${match.team2.player2.avatar || '👤'}</span>
+          ${this.escapeHtml(match.team2.player2.name)}
         </div>
       </div>
     `).join('');
@@ -262,15 +473,41 @@ export class UIController {
   renderLeaderboard() {
     const players = this.state.getPlayers();
     const completedMatches = this.state.completedMatches;
+    const mode = this.state.getTournamentMode();
 
-    const calculator = new StatsCalculator(players, completedMatches);
+    const calculator = new StatsCalculator(players, completedMatches, mode);
     const leaderboard = calculator.calculateLeaderboard();
 
     const tbody = document.getElementById('leaderboardBody');
+    const thead = document.querySelector('#leaderboardTable thead tr');
+
+    // Update table headers based on mode
+    if (mode === 'random') {
+      thead.innerHTML = `
+        <th>Rank</th>
+        <th>Pair</th>
+        <th class="sortable" data-sort="wins">Wins</th>
+        <th class="sortable" data-sort="winPercentage">Win %</th>
+        <th class="sortable" data-sort="pointsScored">Points</th>
+      `;
+    } else {
+      thead.innerHTML = `
+        <th>Rank</th>
+        <th>Player</th>
+        <th class="sortable" data-sort="wins">Wins</th>
+        <th class="sortable" data-sort="winPercentage">Win %</th>
+        <th class="sortable" data-sort="pointsScored">Points</th>
+      `;
+    }
 
     tbody.innerHTML = leaderboard.map((entry, index) => {
       const rank = index + 1;
       const isTop3 = rank <= 3;
+
+      // Different display for random mode (pairs) vs balanced mode (players)
+      const nameDisplay = mode === 'random'
+        ? `<span class="player-avatar-small">${entry.player1.avatar || '👤'}</span> ${this.escapeHtml(entry.player1.name)} - <span class="player-avatar-small">${entry.player2.avatar || '👤'}</span> ${this.escapeHtml(entry.player2.name)}`
+        : `<span class="player-avatar-small">${entry.player.avatar || '👤'}</span> ${this.escapeHtml(entry.player.name)}`;
 
       return `
         <tr class="${isTop3 ? 'top-3' : ''}">
@@ -280,7 +517,7 @@ export class UIController {
               : rank
             }
           </td>
-          <td><strong>${this.escapeHtml(entry.player.name)}</strong></td>
+          <td><strong>${nameDisplay}</strong></td>
           <td>${entry.wins}</td>
           <td>${entry.winPercentage}%</td>
           <td>${entry.pointsScored}</td>

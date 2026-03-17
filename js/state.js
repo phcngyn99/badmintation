@@ -6,9 +6,22 @@ export class TournamentState {
     this.matches = [];
     this.currentMatches = [];
     this.completedMatches = [];
-    this.courtCount = 2;
+    this.courtCount = 1;
     this.tournamentActive = false;
+    this.tournamentMode = 'balanced'; // 'balanced' or 'random'
     this.listeners = [];
+    this.usedAvatars = new Set();
+    this.availableAvatars = [
+      '🦁', '🐯', '🐻', '🐼', '🐨', '🐸', '🐵', '🦊',
+      '🦅', '🦉', '🦋', '🐝', '🐞', '🦖', '🦕', '🐙',
+      '🐶', '🐱', '🐭', '🐹', '🐰', '🦝', '🐮', '🐷',
+      '🐗', '🐴', '🦄', '🐔', '🐧', '🐦', '🐤', '🦆',
+      '🦢', '🦜', '🦩', '🦚', '🦃', '🐺', '🦇', '🐴',
+      '🦓', '🦌', '🦒', '🦘', '🦬', '🐘', '🦏', '🦛',
+      '🐪', '🐫', '🦙', '🦥', '🦦', '🦨', '🦡', '🐾',
+      '🐉', '🐲', '🦎', '🐢', '🐊', '🐍', '🐳', '🐋',
+      '🐬', '🦈', '🐟', '🐠', '🐡', '🦐', '🦑', '🐚'
+    ];
   }
 
   // Player Management
@@ -16,6 +29,7 @@ export class TournamentState {
     const player = {
       id: this.generateId(),
       name: name.trim(),
+      avatar: this.getUniqueAvatar(),
       matchesPlayed: 0,
       lastMatchIndex: -1
     };
@@ -24,7 +38,27 @@ export class TournamentState {
     return player;
   }
 
+  getUniqueAvatar() {
+    // Get available avatars that haven't been used
+    const available = this.availableAvatars.filter(avatar => !this.usedAvatars.has(avatar));
+
+    // If all avatars are used, reset and start over
+    if (available.length === 0) {
+      this.usedAvatars.clear();
+      return this.availableAvatars[Math.floor(Math.random() * this.availableAvatars.length)];
+    }
+
+    // Pick a random available avatar
+    const avatar = available[Math.floor(Math.random() * available.length)];
+    this.usedAvatars.add(avatar);
+    return avatar;
+  }
+
   removePlayer(playerId) {
+    const player = this.players.find(p => p.id === playerId);
+    if (player && player.avatar) {
+      this.usedAvatars.delete(player.avatar);
+    }
     this.players = this.players.filter(p => p.id !== playerId);
     this.notify();
   }
@@ -40,12 +74,21 @@ export class TournamentState {
     this.notify();
   }
 
+  setTournamentMode(mode) {
+    this.tournamentMode = mode;
+  }
+
+  getTournamentMode() {
+    return this.tournamentMode;
+  }
+
   resetTournament() {
     this.players = [];
     this.matches = [];
     this.currentMatches = [];
     this.completedMatches = [];
     this.tournamentActive = false;
+    this.tournamentMode = 'balanced';
     this.notify();
   }
 

@@ -4,7 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Mobile-friendly badminton tournament manager with intelligent round-robin scheduling">
-  <title>Badminton Tournament Manager</title>
+  <title>Badminton Tournament Manager v3.0</title>
+  <!-- Version 3.0: Fixed Max 5 Matches Per Player Limit -->
   
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -28,14 +29,17 @@
     <!-- Hero Header -->
     <header class="hero">
       <h1 class="hero-title">Badminton Tournament</h1>
-      <p class="hero-subtitle">Smart doubles scheduling for your games</p>
     </header>
 
     <!-- Player Management (Pre-Tournament) -->
     <section id="playerManagement" class="section">
       <div class="card">
-        <h2 class="section-title">Add Players</h2>
-        <p class="section-subtitle">Minimum 4 players required for doubles</p>
+        <div class="section-header">
+          <div class="player-count-badge">
+            <span class="player-count-number" id="playerCount">0</span>
+            <span class="player-count-label">Players</span>
+          </div>
+        </div>
 
         <div class="player-input-group">
           <input
@@ -56,13 +60,44 @@
         </div>
 
         <div id="tournamentSetup" class="tournament-setup hidden">
+          <div class="mode-switch-container">
+            <label class="mode-switch-label">Tournament Mode</label>
+            <div class="mode-switch">
+              <input type="radio" id="modeBalanced" name="tournamentMode" value="balanced" checked>
+              <label for="modeBalanced" class="mode-switch-option">
+                <span class="mode-switch-title">Round-Robin</span>
+                <span class="mode-switch-desc" id="balancedMatchCount">7-8 matches</span>
+              </label>
+
+              <input type="radio" id="modeRandom" name="tournamentMode" value="random">
+              <label for="modeRandom" class="mode-switch-option">
+                <span class="mode-switch-title">Random Pairs</span>
+                <span class="mode-switch-desc" id="randomMatchCount">20 matches</span>
+              </label>
+            </div>
+
+            <!-- Match Preview -->
+            <div class="match-preview" id="matchPreview">
+              <div class="match-preview-header">
+                <span class="match-preview-title">Match Preview</span>
+                <span class="match-preview-count" id="previewMatchCount">0 matches</span>
+              </div>
+              <div class="match-preview-list" id="matchPreviewList">
+                <!-- Matches will be listed here -->
+              </div>
+            </div>
+          </div>
+
           <div class="setup-row">
-            <label for="courtCount" class="setup-label">Number of Courts:</label>
+            <div class="setup-label-group">
+              <label for="courtCount" class="setup-label">Number of Courts:</label>
+              <span class="setup-hint" id="courtHint">(max 1)</span>
+            </div>
             <input
               type="number"
               id="courtCount"
               class="input-number"
-              value="2"
+              value="1"
               min="1"
               max="4"
             />
