@@ -288,11 +288,13 @@ export class UIController {
     let estimatedDuration = 0;
 
     if (selectedMode === 'balanced') {
-      // Round-Robin: always 1 court
-      recommendedCourts = 1;
+      // Round-Robin: calculate optimal courts for ~3 hour target
       const matchCounts = { 6: 8, 7: 11, 8: 14, 9: 18 };
       const matches = matchCounts[players.length] || 0;
-      estimatedDuration = (matches * 15 / 60).toFixed(1);
+      const targetRounds = 12; // ~3 hours
+      recommendedCourts = Math.min(6, Math.max(1, Math.ceil(matches / targetRounds)));
+      const estimatedRounds = Math.ceil(matches / recommendedCourts);
+      estimatedDuration = (estimatedRounds * 15 / 60).toFixed(1);
     } else {
       // Random Pairs: calculate optimal courts
       const pairs = Math.floor(players.length / 2);
@@ -457,10 +459,12 @@ export class UIController {
     let totalMatches = 0;
 
     if (selectedMode === 'balanced') {
-      // Round-Robin: always 1 court (sequential)
+      // Round-Robin: matches can play in parallel with multiple courts
       const matchCounts = { 6: 8, 7: 11, 8: 14, 9: 18 };
       totalMatches = matchCounts[players.length] || 0;
-      estimatedDuration = (totalMatches * 15 / 60).toFixed(1);
+      // With multiple courts, matches play in parallel
+      const estimatedRounds = Math.ceil(totalMatches / courts);
+      estimatedDuration = (estimatedRounds * 15 / 60).toFixed(1);
     } else {
       // Random Pairs: calculate based on actual court count
       const pairs = Math.floor(players.length / 2);
