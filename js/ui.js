@@ -194,34 +194,63 @@ export class UIController {
 
   updateModeAvailability(playerCount) {
     const balancedRadio = document.getElementById('modeBalanced');
+    const randomRadio = document.getElementById('modeRandom');
     const balancedLabel = document.querySelector('label[for="modeBalanced"]');
+    const randomLabel = document.querySelector('label[for="modeRandom"]');
     const modeHint = document.getElementById('modeHint');
 
+    let hint = '';
+
+    // Round-Robin: 6-9 players
     if (playerCount >= 6 && playerCount <= 9) {
-      // Round-Robin available
       balancedRadio.disabled = false;
       if (balancedLabel) {
         balancedLabel.style.opacity = '1';
         balancedLabel.style.cursor = 'pointer';
       }
-      if (modeHint) modeHint.textContent = '';
     } else {
-      // Round-Robin not available
       balancedRadio.disabled = true;
       if (balancedLabel) {
         balancedLabel.style.opacity = '0.5';
         balancedLabel.style.cursor = 'not-allowed';
       }
-      // Switch to Random mode
-      document.getElementById('modeRandom').checked = true;
-      if (modeHint) {
-        modeHint.textContent = playerCount < 6
-          ? 'Round-Robin requires 6-9 players. Use Random Pairs mode.'
-          : 'Round-Robin supports max 9 players. Use Random Pairs mode.';
-        modeHint.style.color = 'var(--clay-yonex-lime)';
-        modeHint.style.fontSize = '0.9rem';
-        modeHint.style.marginTop = '0.5rem';
+      if (playerCount < 6) {
+        hint = 'Round-Robin requires 6-9 players. ';
+      } else if (playerCount > 9) {
+        hint = 'Round-Robin supports max 9 players. ';
       }
+    }
+
+    // Random Pairs: 4-16 players
+    if (playerCount >= 4 && playerCount <= 16) {
+      randomRadio.disabled = false;
+      if (randomLabel) {
+        randomLabel.style.opacity = '1';
+        randomLabel.style.cursor = 'pointer';
+      }
+    } else {
+      randomRadio.disabled = true;
+      if (randomLabel) {
+        randomLabel.style.opacity = '0.5';
+        randomLabel.style.cursor = 'not-allowed';
+      }
+      if (playerCount > 16) {
+        hint += 'Random Pairs supports max 16 players.';
+      }
+    }
+
+    // Auto-select available mode
+    if (balancedRadio.disabled && !randomRadio.disabled) {
+      randomRadio.checked = true;
+    } else if (randomRadio.disabled && !balancedRadio.disabled) {
+      balancedRadio.checked = true;
+    }
+
+    if (modeHint) {
+      modeHint.textContent = hint;
+      modeHint.style.color = 'var(--clay-yonex-lime)';
+      modeHint.style.fontSize = '0.9rem';
+      modeHint.style.marginTop = '0.5rem';
     }
   }
 

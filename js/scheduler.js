@@ -276,10 +276,15 @@ export class MatchScheduler {
   createRandomPairMatches(courtCount) {
     // Random Pairs mode:
     // 1. Create fixed pairs once (random)
-    // 2. Schedule matches with health-aware algorithm
-    // 3. Each pair plays against every other pair (round-robin for pairs)
+    // 2. Calculate optimal courts (max 6, target ~4 hours)
+    // 3. Schedule matches with health-aware algorithm
+    // 4. Each pair plays against every other pair (round-robin for pairs)
 
     if (this.players.length < 4) return [];
+    if (this.players.length > 16) {
+      console.warn('Random Pairs mode supports max 16 players');
+      return [];
+    }
 
     // Step 1: Create random pairs
     const shuffledPlayers = [...this.players].sort(() => Math.random() - 0.5);
@@ -299,7 +304,17 @@ export class MatchScheduler {
       console.log(`Player ${shuffledPlayers[shuffledPlayers.length - 1].name} sits out (odd number)`);
     }
 
-    // Step 2: Generate all possible matchups (each pair vs every other pair)
+    // Step 2: Calculate optimal courts
+    // Target: ~4 hours (16 rounds max at 15 min/round)
+    // Formula: courts = ceil(total_matches / 16) but max 6
+    const totalMatches = pairs.length * (pairs.length - 1) / 2;
+    const targetRounds = 16; // ~4 hours
+    const optimalCourts = Math.ceil(totalMatches / targetRounds);
+    const courts = Math.min(6, Math.max(1, optimalCourts));
+
+    console.log(`Random Pairs: ${pairs.length} pairs, ${totalMatches} matches, using ${courts} courts`);
+
+    // Step 3: Generate all possible matchups (each pair vs every other pair)
     const allMatchups = [];
     for (let i = 0; i < pairs.length; i++) {
       for (let j = i + 1; j < pairs.length; j++) {
@@ -310,125 +325,128 @@ export class MatchScheduler {
       }
     }
 
-    // Step 3: Schedule with health-aware algorithm
-    return this.scheduleRandomPairsMatches(allMatchups, pairs);
+    // Step 4: Schedule with health-aware algorithm
+    return this.scheduleRandomPairsMatches(allMatchups, pairs, courts);
   }
 
-  scheduleRandomPairsMatches(allMatchups, pairs) {
+  scheduleRandomPairsMatches(allMatchups, pairs, courts) {
+    // Multi-court scheduling with strict consecutive prevention
     const matches = [];
     const usedMatchups = new Set();
-    const pairLastMatch = new Map();
+    const pairLastRound = new Map();
     const pairMatchCount = new Map();
     pairs.forEach(p => {
-      pairLastMatch.set(p.id, -1);
+      pairLastRound.set(p.id, -1);
       pairMatchCount.set(p.id, 0);
     });
 
-    let matchIndex = 0;
+    let roundIndex = 0;
 
-    while (usedMatchups.size < allMatchups.length && matchIndex < 50) {
-      // Find best matchup based on rest and avoiding consecutive matches
-      let bestMatchup = null;
-      let bestScore = -Infinity;
+    while (usedMatchups.size < allMatchups.length && roundIndex < 100) {
+      const roundMatches = [];
+      const pairsPlayingThisRound = new Set();
 
-      for (const matchup of allMatchups) {
-        const key = `${matchup.pair1.id}-${matchup.pair2.id}`;
-        if (usedMatchups.has(key)) continue;
+      // Calculate max courts for this round based on available pairs
+      const availablePairs = pairs.filter(p => pairLastRound.get(p.id) !== roundIndex - 1);
+      const maxCourtsThisRound = Math.min(courts, Math.floor(availablePairs.length / 2));
 
-        const pair1Last = pairLastMatch.get(matchup.pair1.id);
-        const pair2Last = pairLastMatch.get(matchup.pair2.id);
-
-        // Skip if either pair just played (would be consecutive)
-        if (pair1Last === matchIndex - 1 || pair2Last === matchIndex - 1) {
-          continue;
-        }
-
-        const pair1Rest = pair1Last === -1 ? Infinity : matchIndex - pair1Last;
-        const pair2Rest = pair2Last === -1 ? Infinity : matchIndex - pair2Last;
-
-        const pair1Fresh = pair1Last === -1 ? 1 : 0;
-        const pair2Fresh = pair2Last === -1 ? 1 : 0;
-        const freshBalance = Math.abs(pair1Fresh - pair2Fresh);
-
-        const pair1Count = pairMatchCount.get(matchup.pair1.id);
-        const pair2Count = pairMatchCount.get(matchup.pair2.id);
-        const countBalance = Math.abs(pair1Count - pair2Count);
-
-        // Score: prefer balanced fresh/played, high rest, and balanced match counts
-        const score = (pair1Rest + pair2Rest) * 100 - freshBalance * 10000 - countBalance * 50;
-
-        if (score > bestScore) {
-          bestScore = score;
-          bestMatchup = matchup;
-        }
-      }
-
-      // If no matchup found (all would be consecutive), relax the constraint
-      if (!bestMatchup) {
+      // Try to fill courts
+      while (roundMatches.length < maxCourtsThisRound) {
+        let bestMatchup = null;
+        let bestScore = -Infinity;
         for (const matchup of allMatchups) {
           const key = `${matchup.pair1.id}-${matchup.pair2.id}`;
           if (usedMatchups.has(key)) continue;
 
-          const pair1Last = pairLastMatch.get(matchup.pair1.id);
-          const pair2Last = pairLastMatch.get(matchup.pair2.id);
+          // Skip if either pair is already playing this round
+          if (pairsPlayingThisRound.has(matchup.pair1.id) ||
+              pairsPlayingThisRound.has(matchup.pair2.id)) {
+            continue;
+          }
 
-          const pair1Rest = pair1Last === -1 ? Infinity : matchIndex - pair1Last;
-          const pair2Rest = pair2Last === -1 ? Infinity : matchIndex - pair2Last;
+          const pair1Last = pairLastRound.get(matchup.pair1.id);
+          const pair2Last = pairLastRound.get(matchup.pair2.id);
 
-          const score = pair1Rest + pair2Rest;
+          // Skip if either pair just played in previous round (would be consecutive)
+          if (pair1Last === roundIndex - 1 || pair2Last === roundIndex - 1) {
+            continue;
+          }
+
+          const pair1Rest = pair1Last === -1 ? Infinity : roundIndex - pair1Last;
+          const pair2Rest = pair2Last === -1 ? Infinity : roundIndex - pair2Last;
+
+          const pair1Fresh = pair1Last === -1 ? 1 : 0;
+          const pair2Fresh = pair2Last === -1 ? 1 : 0;
+          const freshBalance = Math.abs(pair1Fresh - pair2Fresh);
+
+          const pair1Count = pairMatchCount.get(matchup.pair1.id);
+          const pair2Count = pairMatchCount.get(matchup.pair2.id);
+          const countBalance = Math.abs(pair1Count - pair2Count);
+
+          // Score: Prioritize 1) Health balance, 2) Equal match distribution, 3) Rest time
+          const score = -freshBalance * 100000 - countBalance * 1000 + (pair1Rest + pair2Rest) * 10;
 
           if (score > bestScore) {
             bestScore = score;
             bestMatchup = matchup;
           }
         }
+
+        // NEVER relax consecutive constraint - strict enforcement
+        if (!bestMatchup) break; // No more matches can be added to this round
+
+        // Add match to this round
+        const pair1Last = pairLastRound.get(bestMatchup.pair1.id);
+        const pair2Last = pairLastRound.get(bestMatchup.pair2.id);
+
+        const pair1FreshCount = pair1Last === -1 ? 1 : 0;
+        const pair2FreshCount = pair2Last === -1 ? 1 : 0;
+        const freshImbalance = Math.abs(pair1FreshCount - pair2FreshCount);
+
+        const pair1RestStr = pair1Last === -1 ? 'Fresh' : `${roundIndex - pair1Last} rest`;
+        const pair2RestStr = pair2Last === -1 ? 'Fresh' : `${roundIndex - pair2Last} rest`;
+
+        roundMatches.push({
+          id: this.generateId(),
+          team1: {
+            player1: bestMatchup.pair1.player1,
+            player2: bestMatchup.pair1.player2
+          },
+          team2: {
+            player1: bestMatchup.pair2.player1,
+            player2: bestMatchup.pair2.player2
+          },
+          team1Score: null,
+          team2Score: null,
+          status: 'pending',
+          courtNumber: null,
+          healthWarning: freshImbalance > 0,
+          isOptional: false,
+          restInfo: {
+            team1: [pair1RestStr, pair1RestStr],
+            team2: [pair2RestStr, pair2RestStr]
+          },
+          // Store pair info for scoring
+          pair1Id: bestMatchup.pair1.id,
+          pair2Id: bestMatchup.pair2.id
+        });
+
+        usedMatchups.add(`${bestMatchup.pair1.id}-${bestMatchup.pair2.id}`);
+        pairsPlayingThisRound.add(bestMatchup.pair1.id);
+        pairsPlayingThisRound.add(bestMatchup.pair2.id);
+        pairMatchCount.set(bestMatchup.pair1.id, pairMatchCount.get(bestMatchup.pair1.id) + 1);
+        pairMatchCount.set(bestMatchup.pair2.id, pairMatchCount.get(bestMatchup.pair2.id) + 1);
       }
 
-      if (!bestMatchup) break;
-
-      // Create match
-      const pair1Last = pairLastMatch.get(bestMatchup.pair1.id);
-      const pair2Last = pairLastMatch.get(bestMatchup.pair2.id);
-
-      const pair1FreshCount = pair1Last === -1 ? 1 : 0;
-      const pair2FreshCount = pair2Last === -1 ? 1 : 0;
-      const freshImbalance = Math.abs(pair1FreshCount - pair2FreshCount);
-
-      const pair1RestStr = pair1Last === -1 ? 'Fresh' : `${matchIndex - pair1Last} rest`;
-      const pair2RestStr = pair2Last === -1 ? 'Fresh' : `${matchIndex - pair2Last} rest`;
-
-      matches.push({
-        id: this.generateId(),
-        team1: {
-          player1: bestMatchup.pair1.player1,
-          player2: bestMatchup.pair1.player2
-        },
-        team2: {
-          player1: bestMatchup.pair2.player1,
-          player2: bestMatchup.pair2.player2
-        },
-        team1Score: null,
-        team2Score: null,
-        status: 'pending',
-        courtNumber: null,
-        healthWarning: freshImbalance > 0,
-        isOptional: false,
-        restInfo: {
-          team1: [pair1RestStr, pair1RestStr],
-          team2: [pair2RestStr, pair2RestStr]
-        },
-        // Store pair info for scoring
-        pair1Id: bestMatchup.pair1.id,
-        pair2Id: bestMatchup.pair2.id
+      // Update last round for all pairs that played
+      pairsPlayingThisRound.forEach(pairId => {
+        pairLastRound.set(pairId, roundIndex);
       });
 
-      usedMatchups.add(`${bestMatchup.pair1.id}-${bestMatchup.pair2.id}`);
-      pairLastMatch.set(bestMatchup.pair1.id, matchIndex);
-      pairLastMatch.set(bestMatchup.pair2.id, matchIndex);
-      pairMatchCount.set(bestMatchup.pair1.id, pairMatchCount.get(bestMatchup.pair1.id) + 1);
-      pairMatchCount.set(bestMatchup.pair2.id, pairMatchCount.get(bestMatchup.pair2.id) + 1);
+      // Add all matches from this round
+      matches.push(...roundMatches);
 
-      matchIndex++;
+      roundIndex++;
     }
 
     return matches;
