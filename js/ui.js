@@ -259,13 +259,42 @@ export class UIController {
     const randomCountEl = document.getElementById('randomMatchCount');
     const courtCountInput = document.getElementById('courtCount');
     const courtHintEl = document.getElementById('courtHint');
+    const courtRecommendationEl = document.getElementById('courtRecommendation');
 
     if (!balancedCountEl || !randomCountEl || !courtCountInput || !players || players.length < 4) return;
 
+    // Get selected mode
+    const selectedMode = document.querySelector('input[name="tournamentMode"]:checked')?.value || 'balanced';
+
+    // Calculate recommended courts based on mode
+    let recommendedCourts = 1;
+    let estimatedDuration = 0;
+
+    if (selectedMode === 'balanced') {
+      // Round-Robin: always 1 court
+      recommendedCourts = 1;
+      const matchCounts = { 6: 8, 7: 11, 8: 14, 9: 18 };
+      const matches = matchCounts[players.length] || 0;
+      estimatedDuration = (matches * 15 / 60).toFixed(1);
+    } else {
+      // Random Pairs: calculate optimal courts
+      const pairs = Math.floor(players.length / 2);
+      const totalMatches = pairs * (pairs - 1) / 2;
+      const targetRounds = 12; // ~3 hours
+      recommendedCourts = Math.min(6, Math.max(1, Math.ceil(totalMatches / targetRounds)));
+      const estimatedRounds = Math.ceil(totalMatches / recommendedCourts);
+      estimatedDuration = (estimatedRounds * 15 / 60).toFixed(1);
+    }
+
+    // Update court recommendation
+    if (courtRecommendationEl) {
+      courtRecommendationEl.textContent = `💡 Recommended: ${recommendedCourts} court${recommendedCourts > 1 ? 's' : ''} (~${estimatedDuration}h)`;
+      courtRecommendationEl.style.display = 'inline-block';
+    }
+
     // Calculate maximum courts based on player count
-    // Each doubles match needs 4 players
     const maxCourts = Math.floor(players.length / 4);
-    const constrainedMaxCourts = Math.max(1, Math.min(maxCourts, 4)); // Between 1-4
+    const constrainedMaxCourts = Math.max(1, Math.min(maxCourts, 6)); // Between 1-6
 
     // Update court input constraints
     courtCountInput.max = constrainedMaxCourts;
@@ -279,6 +308,9 @@ export class UIController {
     if (parseInt(courtCountInput.value) > constrainedMaxCourts) {
       courtCountInput.value = constrainedMaxCourts;
     }
+
+    // Auto-set to recommended courts
+    courtCountInput.value = recommendedCourts;
 
     // Calculate balanced mode matches
     const balancedScheduler = new MatchScheduler(players, 'balanced');

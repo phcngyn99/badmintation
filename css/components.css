@@ -758,6 +758,17 @@
   color: var(--clay-muted);
 }
 
+.court-recommendation {
+  font-size: 0.9rem;
+  color: var(--clay-yonex-lime);
+  font-weight: 600;
+  margin-top: 0.25rem;
+  padding: 0.25rem 0.5rem;
+  background: rgba(185, 242, 72, 0.1);
+  border-radius: 4px;
+  display: inline-block;
+}
+
 /* ===========================
    Courts
    =========================== */
