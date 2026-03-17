@@ -33,6 +33,7 @@ export class UIController {
       const players = this.state.getPlayers();
       if (players.length >= 4) {
         this.updateCourtInfo(players);
+        this.updateMatchPreview(players); // Update match preview when courts change
       }
     });
 
@@ -460,7 +461,8 @@ export class UIController {
       estimatedDuration = (estimatedRounds * 15 / 60).toFixed(1);
     }
 
-    courtInfoEl.textContent = `${totalMatches} matches, estimated duration: ~${estimatedDuration} hours with ${courts} court${courts > 1 ? 's' : ''}`;
+    // Create highlighted duration text
+    courtInfoEl.innerHTML = `${totalMatches} matches, estimated duration: <span class="duration-highlight">~${estimatedDuration} hours</span> with ${courts} court${courts > 1 ? 's' : ''}`;
   }
 
   updateModePreview() {

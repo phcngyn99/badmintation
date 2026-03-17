@@ -759,10 +759,16 @@
 }
 
 .court-info {
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   color: var(--clay-text-secondary);
   margin-top: 0.5rem;
-  font-style: italic;
+  font-weight: 500;
+}
+
+.court-info .duration-highlight {
+  color: var(--clay-yonex-lime);
+  font-weight: 700;
+  font-size: 1rem;
 }
 
 /* ===========================
