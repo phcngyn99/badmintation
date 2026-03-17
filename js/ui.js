@@ -28,6 +28,14 @@ export class UIController {
       radio.addEventListener('change', () => this.updateModePreview());
     });
 
+    // Court count change
+    document.getElementById('courtCount').addEventListener('input', () => {
+      const players = this.state.getPlayers();
+      if (players.length >= 4) {
+        this.updateCourtInfo(players);
+      }
+    });
+
     // Leaderboard
     document.getElementById('leaderboardTab').addEventListener('click', () => this.showLeaderboard());
     document.getElementById('closeLeaderboard').addEventListener('click', () => this.hideLeaderboard());
@@ -301,10 +309,8 @@ export class UIController {
     // Auto-set to recommended courts (but allow user to change)
     courtCountInput.value = recommendedCourts;
 
-    // Show info about the recommendation
-    if (courtInfoEl) {
-      courtInfoEl.textContent = `Estimated duration: ~${estimatedDuration} hours with ${recommendedCourts} court${recommendedCourts > 1 ? 's' : ''}`;
-    }
+    // Update court info
+    this.updateCourtInfo(players);
 
     // Calculate balanced mode matches
     const balancedScheduler = new MatchScheduler(players, 'balanced');
@@ -427,6 +433,34 @@ export class UIController {
         </div>
       `;
     }
+  }
+
+  updateCourtInfo(players) {
+    const courtInfoEl = document.getElementById('courtInfo');
+    const courtCountInput = document.getElementById('courtCount');
+
+    if (!courtInfoEl || !courtCountInput || !players || players.length < 4) return;
+
+    const selectedMode = document.querySelector('input[name="tournamentMode"]:checked')?.value || 'balanced';
+    const courts = parseInt(courtCountInput.value) || 1;
+
+    let estimatedDuration = 0;
+    let totalMatches = 0;
+
+    if (selectedMode === 'balanced') {
+      // Round-Robin: always 1 court (sequential)
+      const matchCounts = { 6: 8, 7: 11, 8: 14, 9: 18 };
+      totalMatches = matchCounts[players.length] || 0;
+      estimatedDuration = (totalMatches * 15 / 60).toFixed(1);
+    } else {
+      // Random Pairs: calculate based on actual court count
+      const pairs = Math.floor(players.length / 2);
+      totalMatches = pairs * (pairs - 1) / 2;
+      const estimatedRounds = Math.ceil(totalMatches / courts);
+      estimatedDuration = (estimatedRounds * 15 / 60).toFixed(1);
+    }
+
+    courtInfoEl.textContent = `${totalMatches} matches, estimated duration: ~${estimatedDuration} hours with ${courts} court${courts > 1 ? 's' : ''}`;
   }
 
   updateModePreview() {
