@@ -12,6 +12,10 @@ export class StatsCalculator {
       return this.calculatePairLeaderboard();
     }
 
+    const playerCount = this.players.length;
+    // Use win percentage for 6 & 7 (unequal matches), points for 8 & 9 (equal matches)
+    const useWinPercentage = playerCount === 6 || playerCount === 7;
+
     return this.players.map(player => {
       const stats = this.calculatePlayerStats(player);
       return {
@@ -19,9 +23,17 @@ export class StatsCalculator {
         ...stats
       };
     }).sort((a, b) => {
-      if (b.wins !== a.wins) return b.wins - a.wins;
-      if (b.winPercentage !== a.winPercentage) return b.winPercentage - a.winPercentage;
-      return b.pointsScored - a.pointsScored;
+      if (useWinPercentage) {
+        // For 6 & 7 players: Sort by win percentage first
+        if (b.winPercentage !== a.winPercentage) return b.winPercentage - a.winPercentage;
+        if (b.wins !== a.wins) return b.wins - a.wins;
+        return b.pointsScored - a.pointsScored;
+      } else {
+        // For 8 players: Sort by wins (points) first
+        if (b.wins !== a.wins) return b.wins - a.wins;
+        if (b.winPercentage !== a.winPercentage) return b.winPercentage - a.winPercentage;
+        return b.pointsScored - a.pointsScored;
+      }
     });
   }
 

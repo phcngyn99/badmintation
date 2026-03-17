@@ -38,6 +38,28 @@
   75% { transform: translateX(10px); }
 }
 
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideOut {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
 .animate-float { animation: clay-float 8s ease-in-out infinite; }
 .animate-float-delayed { animation: clay-float-delayed 10s ease-in-out infinite; }
 .animate-breathe { animation: clay-breathe 6s ease-in-out infinite; }

@@ -160,6 +160,16 @@
   width: 100%;
 }
 
+.button-group {
+  display: flex;
+  gap: 1rem;
+  width: 100%;
+}
+
+.button-group .btn {
+  flex: 1;
+}
+
 @media (min-width: 640px) {
   .btn-full { width: auto; }
 }
@@ -186,6 +196,45 @@
   background: linear-gradient(135deg, var(--clay-yonex-blue-light), var(--clay-yonex-blue));
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-clay-button);
+  position: relative;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.player-count-badge::before {
+  content: 'Shuffle';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, var(--clay-yonex-lime-light), var(--clay-yonex-lime));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  font-weight: 600;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 1;
+}
+
+.player-count-badge:hover::before {
+  opacity: 1;
+}
+
+.player-count-badge:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+}
+
+.player-count-badge:active {
+  transform: translateY(0);
+}
+
+.shuffle-icon {
+  display: none;
 }
 
 .player-count-number {
@@ -341,6 +390,7 @@
   gap: var(--spacing-sm);
   margin-bottom: var(--spacing-lg);
   min-height: 100px;
+  transition: opacity 0.15s ease, transform 0.15s ease;
 }
 
 .player-card {

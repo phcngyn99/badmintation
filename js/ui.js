@@ -20,6 +20,7 @@ export class UIController {
     });
 
     // Tournament control
+    document.getElementById('playerCountBadge').addEventListener('click', () => this.handleShufflePlayers());
     document.getElementById('startTournamentBtn').addEventListener('click', () => this.handleStartTournament());
 
     // Mode switch
@@ -60,6 +61,39 @@ export class UIController {
     }
   }
 
+  handleShufflePlayers() {
+    const players = this.state.getPlayers();
+
+    if (players.length < 6) {
+      alert('Need at least 6 players to shuffle');
+      return;
+    }
+
+    console.log('Before shuffle:', players.map(p => p.name).join(', '));
+
+    // Add shuffle animation to roster
+    const roster = document.getElementById('playerRoster');
+    roster.style.opacity = '0.5';
+    roster.style.transform = 'scale(0.98)';
+
+    setTimeout(() => {
+      // Shuffle the player list
+      this.state.shufflePlayers();
+
+      console.log('After shuffle:', this.state.getPlayers().map(p => p.name).join(', '));
+
+      // Force re-render
+      this.renderPlayerManagement();
+
+      // Regenerate match preview with new order
+      this.updateMatchPreview(this.state.getPlayers());
+
+      // Reset animation
+      roster.style.opacity = '1';
+      roster.style.transform = 'scale(1)';
+    }, 150);
+  }
+
   handleStartTournament() {
     const players = this.state.getPlayers();
 
@@ -72,6 +106,12 @@ export class UIController {
     // Get selected mode from radio buttons
     const mode = document.querySelector('input[name="tournamentMode"]:checked').value;
 
+    // Validate Round-Robin mode
+    if (mode === 'balanced' && (players.length < 6 || players.length > 9)) {
+      alert('Round-Robin mode requires 6-9 players. Please use Random Pairs mode or adjust player count.');
+      return;
+    }
+
     console.log('Starting tournament with mode:', mode, 'players:', players.length);
 
     // Generate matches with court count for optimal rest scheduling
@@ -83,6 +123,32 @@ export class UIController {
     this.state.setMatches(matches);
     this.state.setTournamentMode(mode);
     this.state.startTournament(courtCount);
+  }
+
+  showNotification(message) {
+    // Simple notification - could be enhanced with a toast component
+    const notification = document.createElement('div');
+    notification.className = 'notification';
+    notification.textContent = message;
+    notification.style.cssText = `
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: var(--yonex-blue);
+      color: white;
+      padding: 1rem 1.5rem;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      z-index: 10000;
+      animation: slideIn 0.3s ease-out;
+    `;
+
+    document.body.appendChild(notification);
+
+    setTimeout(() => {
+      notification.style.animation = 'slideOut 0.3s ease-out';
+      setTimeout(() => notification.remove(), 300);
+    }, 2000);
   }
 
   renderPlayerManagement() {
@@ -117,11 +183,45 @@ export class UIController {
         setup.classList.remove('hidden');
         this.updateMatchCounts(players);
         this.updateModePreview();
+        this.updateModeAvailability(players.length);
       } else {
         setup.classList.add('hidden');
       }
     } catch (error) {
       console.error('Error rendering player management:', error);
+    }
+  }
+
+  updateModeAvailability(playerCount) {
+    const balancedRadio = document.getElementById('modeBalanced');
+    const balancedLabel = document.querySelector('label[for="modeBalanced"]');
+    const modeHint = document.getElementById('modeHint');
+
+    if (playerCount >= 6 && playerCount <= 9) {
+      // Round-Robin available
+      balancedRadio.disabled = false;
+      if (balancedLabel) {
+        balancedLabel.style.opacity = '1';
+        balancedLabel.style.cursor = 'pointer';
+      }
+      if (modeHint) modeHint.textContent = '';
+    } else {
+      // Round-Robin not available
+      balancedRadio.disabled = true;
+      if (balancedLabel) {
+        balancedLabel.style.opacity = '0.5';
+        balancedLabel.style.cursor = 'not-allowed';
+      }
+      // Switch to Random mode
+      document.getElementById('modeRandom').checked = true;
+      if (modeHint) {
+        modeHint.textContent = playerCount < 6
+          ? 'Round-Robin requires 6-9 players. Use Random Pairs mode.'
+          : 'Round-Robin supports max 9 players. Use Random Pairs mode.';
+        modeHint.style.color = 'var(--clay-yonex-lime)';
+        modeHint.style.fontSize = '0.9rem';
+        modeHint.style.marginTop = '0.5rem';
+      }
     }
   }
 
@@ -277,7 +377,7 @@ export class UIController {
   updateModePreview() {
     // Trigger match preview update when mode changes
     const players = this.state.getPlayers();
-    if (players.length >= 4) {
+    if (players.length >= 6) {
       this.updateMatchPreview(players);
     }
   }
@@ -481,7 +581,10 @@ export class UIController {
     const tbody = document.getElementById('leaderboardBody');
     const thead = document.querySelector('#leaderboardTable thead tr');
 
-    // Update table headers based on mode
+    const playerCount = players.length;
+    const useWinPercentage = playerCount === 6 || playerCount === 7;
+
+    // Update table headers based on mode and player count
     if (mode === 'random') {
       thead.innerHTML = `
         <th>Rank</th>
@@ -491,13 +594,24 @@ export class UIController {
         <th class="sortable" data-sort="pointsScored">Points</th>
       `;
     } else {
-      thead.innerHTML = `
-        <th>Rank</th>
-        <th>Player</th>
-        <th class="sortable" data-sort="wins">Wins</th>
-        <th class="sortable" data-sort="winPercentage">Win %</th>
-        <th class="sortable" data-sort="pointsScored">Points</th>
-      `;
+      // Round-Robin mode: different headers for 6/7 vs 8 players
+      if (useWinPercentage) {
+        thead.innerHTML = `
+          <th>Rank</th>
+          <th>Player</th>
+          <th class="sortable" data-sort="winPercentage">Win %</th>
+          <th class="sortable" data-sort="wins">Wins</th>
+          <th class="sortable" data-sort="matchesPlayed">Matches</th>
+        `;
+      } else {
+        thead.innerHTML = `
+          <th>Rank</th>
+          <th>Player</th>
+          <th class="sortable" data-sort="wins">Points</th>
+          <th class="sortable" data-sort="winPercentage">Win %</th>
+          <th class="sortable" data-sort="pointsScored">Score</th>
+        `;
+      }
     }
 
     tbody.innerHTML = leaderboard.map((entry, index) => {
@@ -509,6 +623,30 @@ export class UIController {
         ? `<span class="player-avatar-small">${entry.player1.avatar || '👤'}</span> ${this.escapeHtml(entry.player1.name)} - <span class="player-avatar-small">${entry.player2.avatar || '👤'}</span> ${this.escapeHtml(entry.player2.name)}`
         : `<span class="player-avatar-small">${entry.player.avatar || '👤'}</span> ${this.escapeHtml(entry.player.name)}`;
 
+      // Different columns based on mode and player count
+      let statsColumns;
+      if (mode === 'random') {
+        statsColumns = `
+          <td>${entry.wins}</td>
+          <td>${entry.winPercentage}%</td>
+          <td>${entry.pointsScored}</td>
+        `;
+      } else if (useWinPercentage) {
+        // 6 & 7 players: Show Win % first
+        statsColumns = `
+          <td><strong>${entry.winPercentage}%</strong></td>
+          <td>${entry.wins}</td>
+          <td>${entry.matchesPlayed}</td>
+        `;
+      } else {
+        // 8 players: Show Points first
+        statsColumns = `
+          <td><strong>${entry.wins}</strong></td>
+          <td>${entry.winPercentage}%</td>
+          <td>${entry.pointsScored}</td>
+        `;
+      }
+
       return `
         <tr class="${isTop3 ? 'top-3' : ''}">
           <td>
@@ -518,9 +656,7 @@ export class UIController {
             }
           </td>
           <td><strong>${nameDisplay}</strong></td>
-          <td>${entry.wins}</td>
-          <td>${entry.winPercentage}%</td>
-          <td>${entry.pointsScored}</td>
+          ${statsColumns}
         </tr>
       `;
     }).join('');
