@@ -25,7 +25,13 @@ export class UIController {
 
     // Mode switch
     document.querySelectorAll('input[name="tournamentMode"]').forEach(radio => {
-      radio.addEventListener('change', () => this.updateModePreview());
+      radio.addEventListener('change', () => {
+        this.updateModePreview();
+        const players = this.state.getPlayers();
+        if (players.length >= 4) {
+          this.updateCourtInfo(players);
+        }
+      });
     });
 
     // Court count change
@@ -210,7 +216,7 @@ export class UIController {
 
     let hint = '';
 
-    // Round-Robin: 6-9 players
+    // Round-Robin: 6-9 players (DEFAULT when available)
     if (playerCount >= 6 && playerCount <= 9) {
       balancedRadio.disabled = false;
       if (balancedLabel) {
@@ -226,7 +232,7 @@ export class UIController {
       if (playerCount < 6) {
         hint = 'Round-Robin requires 6-9 players. ';
       } else if (playerCount > 9) {
-        hint = 'Round-Robin supports max 9 players. ';
+        hint = 'Round-Robin supports max 9 players. Use Random Pairs mode.';
       }
     }
 
@@ -248,11 +254,13 @@ export class UIController {
       }
     }
 
-    // Auto-select available mode
-    if (balancedRadio.disabled && !randomRadio.disabled) {
-      randomRadio.checked = true;
-    } else if (randomRadio.disabled && !balancedRadio.disabled) {
+    // Auto-select mode: Prefer Round-Robin when available
+    if (!balancedRadio.disabled) {
+      // Round-Robin available (6-9 players) - select it as default
       balancedRadio.checked = true;
+    } else if (!randomRadio.disabled) {
+      // Only Random Pairs available - select it
+      randomRadio.checked = true;
     }
 
     if (modeHint) {
