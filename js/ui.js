@@ -259,7 +259,7 @@ export class UIController {
     const randomCountEl = document.getElementById('randomMatchCount');
     const courtCountInput = document.getElementById('courtCount');
     const courtHintEl = document.getElementById('courtHint');
-    const courtRecommendationEl = document.getElementById('courtRecommendation');
+    const courtInfoEl = document.getElementById('courtInfo');
 
     if (!balancedCountEl || !randomCountEl || !courtCountInput || !players || players.length < 4) return;
 
@@ -286,12 +286,6 @@ export class UIController {
       estimatedDuration = (estimatedRounds * 15 / 60).toFixed(1);
     }
 
-    // Update court recommendation
-    if (courtRecommendationEl) {
-      courtRecommendationEl.textContent = `💡 Recommended: ${recommendedCourts} court${recommendedCourts > 1 ? 's' : ''} (~${estimatedDuration}h)`;
-      courtRecommendationEl.style.display = 'inline-block';
-    }
-
     // Calculate maximum courts based on player count
     const maxCourts = Math.floor(players.length / 4);
     const constrainedMaxCourts = Math.max(1, Math.min(maxCourts, 6)); // Between 1-6
@@ -301,16 +295,16 @@ export class UIController {
 
     // Update hint text
     if (courtHintEl) {
-      courtHintEl.textContent = `(max ${constrainedMaxCourts})`;
+      courtHintEl.textContent = `(recommended, max ${constrainedMaxCourts})`;
     }
 
-    // If current value exceeds max, adjust it
-    if (parseInt(courtCountInput.value) > constrainedMaxCourts) {
-      courtCountInput.value = constrainedMaxCourts;
-    }
-
-    // Auto-set to recommended courts
+    // Auto-set to recommended courts (but allow user to change)
     courtCountInput.value = recommendedCourts;
+
+    // Show info about the recommendation
+    if (courtInfoEl) {
+      courtInfoEl.textContent = `Estimated duration: ~${estimatedDuration} hours with ${recommendedCourts} court${recommendedCourts > 1 ? 's' : ''}`;
+    }
 
     // Calculate balanced mode matches
     const balancedScheduler = new MatchScheduler(players, 'balanced');
