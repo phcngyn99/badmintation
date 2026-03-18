@@ -13,9 +13,9 @@
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
   
   <!-- Stylesheets -->
-  <link rel="stylesheet" href="css/design-system.css?v=2024031823">
-  <link rel="stylesheet" href="css/components.css?v=2024031823">
-  <link rel="stylesheet" href="css/animations.css?v=2024031823">
+  <link rel="stylesheet" href="css/design-system.css?v=2024031824">
+  <link rel="stylesheet" href="css/components.css?v=2024031824">
+  <link rel="stylesheet" href="css/animations.css?v=2024031824">
 </head>
 <body>
   <!-- Background Blobs -->
@@ -186,50 +186,119 @@
           <button id="closeScoringInfo" class="close-modal">×</button>
         </div>
         <div class="modal-body">
-          <div class="scoring-rules">
-            <h3>👥 Player Requirements</h3>
-            <ul>
-              <li>✅ Minimum: <strong>4 players</strong> (2 pairs)</li>
-              <li>✅ Maximum: <strong>16 players</strong> (8 pairs)</li>
-              <li>✅ Each player gets a unique avatar</li>
-              <li>✅ Players can be shuffled for randomization</li>
-            </ul>
+          <table class="info-table">
+            <thead>
+              <tr>
+                <th colspan="2">👥 Player Requirements</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Minimum Players</td>
+                <td><strong>4 players</strong> (2 pairs)</td>
+              </tr>
+              <tr>
+                <td>Maximum Players</td>
+                <td><strong>16 players</strong> (8 pairs)</td>
+              </tr>
+              <tr>
+                <td>Avatars</td>
+                <td>70+ unique avatars available</td>
+              </tr>
+              <tr>
+                <td>Shuffle</td>
+                <td>Randomize player order</td>
+              </tr>
+            </tbody>
+          </table>
 
-            <h3>🏸 Tournament Modes</h3>
-            <ul>
-              <li><strong>Round-Robin (6-9 players):</strong> Everyone partners with everyone. Best for social play where you want to play with different people.</li>
-              <li><strong>Random Pairs (4-16 players):</strong> Fixed pairs compete against each other. Best for competitive play with consistent teams.</li>
-            </ul>
+          <table class="info-table">
+            <thead>
+              <tr>
+                <th colspan="2">🏸 Tournament Modes</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Round-Robin</strong></td>
+                <td>6-9 players. Everyone partners with everyone. Best for social play.</td>
+              </tr>
+              <tr>
+                <td><strong>Random Pairs</strong></td>
+                <td>4-16 players. Fixed pairs compete. Best for competitive play.</td>
+              </tr>
+            </tbody>
+          </table>
 
-            <h3>🏟️ Court Configuration</h3>
-            <ul>
-              <li>✅ Support for <strong>1-6 courts</strong></li>
-              <li>✅ Random Pairs requires minimum <strong>2 courts</strong> for parallel play</li>
-              <li>✅ System recommends optimal court count based on players</li>
-              <li>✅ All courts filled at tournament start for efficiency</li>
-            </ul>
+          <table class="info-table">
+            <thead>
+              <tr>
+                <th colspan="2">🏟️ Court Configuration</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Courts Supported</td>
+                <td><strong>1-6 courts</strong></td>
+              </tr>
+              <tr>
+                <td>Random Pairs Minimum</td>
+                <td><strong>2 courts</strong> (for parallel play)</td>
+              </tr>
+              <tr>
+                <td>Recommendation</td>
+                <td>System suggests optimal court count</td>
+              </tr>
+              <tr>
+                <td>Efficiency</td>
+                <td>All courts filled at tournament start</td>
+              </tr>
+            </tbody>
+          </table>
 
-            <h3>🎯 Scoring Rules</h3>
-            <ul>
-              <li>✅ Winner must score at least <strong>21 points</strong></li>
-              <li>✅ Must win by <strong>2 points</strong> (e.g., 21-19, 22-20)</li>
-              <li>✅ Game ends at <strong>30 points</strong> (no need to win by 2)</li>
-              <li>✅ If winner has 30, loser must have 28 or 29</li>
-            </ul>
+          <table class="info-table">
+            <thead>
+              <tr>
+                <th colspan="2">🎯 Scoring Rules</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Minimum Score</td>
+                <td>Winner must score <strong>≥21 points</strong></td>
+              </tr>
+              <tr>
+                <td>Win Margin</td>
+                <td>Must win by <strong>2 points</strong> (e.g., 21-19, 22-20)</td>
+              </tr>
+              <tr>
+                <td>Maximum Score</td>
+                <td>Game ends at <strong>30 points</strong> (no need to win by 2)</td>
+              </tr>
+              <tr>
+                <td>Special Rule</td>
+                <td>If winner has 30, loser must have 28 or 29</td>
+              </tr>
+            </tbody>
+          </table>
 
-            <h3>📊 Score Examples</h3>
-            <div class="score-examples">
-              <div class="score-example valid">
-                <strong>✅ Valid Scores:</strong> 21-19, 22-20, 23-21, 24-22, 30-28, 30-29
-              </div>
-              <div class="score-example invalid">
-                <strong>❌ Invalid Scores:</strong> 21-20 (not win by 2), 23-12 (not win by 2), 30-27 (loser must be 28+), 31-29 (max is 30), 21-21 (no ties)
-              </div>
-            </div>
-
-            <h3>💡 Why These Rules?</h3>
-            <p>Official badminton rules ensure fair play and prevent quick wins. The 2-point margin requirement (except at 30) means you must clearly outplay your opponent to win. This creates more competitive and exciting matches!</p>
-          </div>
+          <table class="info-table">
+            <thead>
+              <tr>
+                <th colspan="2">📊 Score Examples</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="valid-cell">✅ Valid</td>
+                <td>21-19, 22-20, 23-21, 24-22, 30-28, 30-29</td>
+              </tr>
+              <tr>
+                <td class="invalid-cell">❌ Invalid</td>
+                <td>21-20 (not win by 2), 23-12 (not win by 2), 30-27 (loser &lt; 28), 31-29 (max is 30), 21-21 (no ties)</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
@@ -241,7 +310,7 @@
   </div>
 
   <!-- JavaScript Modules -->
-  <script type="module" src="js/main.js?v=2024031823"></script>
+  <script type="module" src="js/main.js?v=2024031824"></script>
 </body>
 </html>
 
