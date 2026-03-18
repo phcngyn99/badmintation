@@ -618,10 +618,12 @@ export class UIController {
   }
 
   validateMatchScore(score1, score2) {
+    // Check if scores are entered
     if (isNaN(score1) || isNaN(score2)) {
       return { valid: false, message: 'Please enter both scores' };
     }
 
+    // Check for negative scores
     if (score1 < 0 || score2 < 0) {
       return { valid: false, message: 'Scores cannot be negative' };
     }
@@ -629,12 +631,31 @@ export class UIController {
     const maxScore = Math.max(score1, score2);
     const minScore = Math.min(score1, score2);
 
+    // Rule 1: Winner must reach at least 21
     if (maxScore < 21) {
-      return { valid: false, message: 'Winning score must be at least 21' };
+      return { valid: false, message: 'Winner must score at least 21 points' };
     }
 
-    if (maxScore < 30 && (maxScore - minScore) < 2) {
-      return { valid: false, message: 'Must win by 2 points (or reach 30)' };
+    // Rule 2: Must win by 2 points (unless score reaches 30)
+    if (maxScore < 30) {
+      if ((maxScore - minScore) < 2) {
+        return { valid: false, message: 'Must win by at least 2 points (e.g., 21-19, 22-20)' };
+      }
+    }
+
+    // Rule 3: Game ends at 30 (no need to win by 2)
+    if (maxScore > 30) {
+      return { valid: false, message: 'Maximum score is 30 points' };
+    }
+
+    // Rule 4: If one team has 30, the other must have 28 or 29
+    if (maxScore === 30 && minScore < 28) {
+      return { valid: false, message: 'Invalid score: If winner has 30, loser must have 28 or 29' };
+    }
+
+    // Rule 5: Both teams cannot have same score
+    if (score1 === score2) {
+      return { valid: false, message: 'Scores cannot be equal - there must be a winner' };
     }
 
     return { valid: true };
