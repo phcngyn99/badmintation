@@ -1085,6 +1085,31 @@
 
 .queue-count {
   color: var(--clay-yonex-blue);
+  display: flex;
+  gap: var(--spacing-sm);
+  align-items: center;
+}
+
+.status-summary {
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.status-summary.completed {
+  background: var(--clay-success);
+  color: white;
+}
+
+.status-summary.in-progress {
+  background: var(--clay-yonex-lime);
+  color: var(--clay-foreground);
+}
+
+.status-summary.pending {
+  background: var(--clay-muted);
+  color: white;
 }
 
 .chevron {

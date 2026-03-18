@@ -667,7 +667,12 @@ export class UIController {
     const inProgressCount = allMatches.filter(m => m.status === 'in-progress').length;
     const pendingCount = allMatches.filter(m => m.status === 'pending').length;
 
-    countEl.textContent = `(${completedCount}/${totalMatches})`;
+    // Update summary: "Completed: 3 | In Progress: 2 | Pending: 5"
+    countEl.innerHTML = `
+      <span class="status-summary completed">✓ ${completedCount}</span>
+      <span class="status-summary in-progress">▶ ${inProgressCount}</span>
+      <span class="status-summary pending">⏳ ${pendingCount}</span>
+    `;
 
     listEl.innerHTML = allMatches.map((match, index) => {
       let statusBadge = '';
