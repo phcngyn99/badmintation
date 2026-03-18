@@ -71,7 +71,7 @@
   height: 28px;
   background: white;
   color: var(--clay-yonex-blue);
-  border: 2px solid var(--clay-yonex-blue);
+  border: none;
   border-radius: 50%;
   font-size: 1rem;
   font-weight: 700;
