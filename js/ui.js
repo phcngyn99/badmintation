@@ -196,9 +196,9 @@ export class UIController {
       // Show/hide tournament setup
       if (players.length >= 4) {
         setup.classList.remove('hidden');
-        this.updateMatchCounts(players);
+        this.updateModeAvailability(players.length); // Set mode FIRST
+        this.updateMatchCounts(players); // Then update counts (which calls updateCourtInfo)
         this.updateModePreview();
-        this.updateModeAvailability(players.length);
       } else {
         setup.classList.add('hidden');
       }
@@ -320,8 +320,8 @@ export class UIController {
     // ALWAYS set to recommended courts when players change
     courtCountInput.value = recommendedCourts;
 
-    // Trigger input event to update all displays
-    courtCountInput.dispatchEvent(new Event('input', { bubbles: true }));
+    // Update court info directly (don't trigger input event yet, mode might not be set)
+    this.updateCourtInfo(players);
 
     // Calculate balanced mode matches
     const balancedScheduler = new MatchScheduler(players, 'balanced');
