@@ -51,6 +51,17 @@ export class UIController {
     // Clear tournament
     document.getElementById('clearTournamentBtn').addEventListener('click', () => this.handleClearTournament());
 
+    // Scoring info
+    document.getElementById('scoringInfoBtn').addEventListener('click', () => this.showScoringInfo());
+    document.getElementById('closeScoringInfo').addEventListener('click', () => this.hideScoringInfo());
+
+    // Close scoring info when clicking backdrop
+    document.getElementById('scoringInfoModal').addEventListener('click', (e) => {
+      if (e.target.id === 'scoringInfoModal') {
+        this.hideScoringInfo();
+      }
+    });
+
     // Queue toggle
     document.getElementById('queueToggle').addEventListener('click', () => this.toggleQueue());
   }
@@ -908,6 +919,14 @@ export class UIController {
       this.state.clearState();
       location.reload(); // Reload page to reset everything
     }
+  }
+
+  showScoringInfo() {
+    document.getElementById('scoringInfoModal').classList.remove('hidden');
+  }
+
+  hideScoringInfo() {
+    document.getElementById('scoringInfoModal').classList.add('hidden');
   }
 }
 // Updated: Wed Mar 18 09:02:28 +07 2026

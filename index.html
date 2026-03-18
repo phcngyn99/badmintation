@@ -13,9 +13,9 @@
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
   
   <!-- Stylesheets -->
-  <link rel="stylesheet" href="css/design-system.css?v=2024031820">
-  <link rel="stylesheet" href="css/components.css?v=2024031820">
-  <link rel="stylesheet" href="css/animations.css?v=2024031820">
+  <link rel="stylesheet" href="css/design-system.css?v=2024031821">
+  <link rel="stylesheet" href="css/components.css?v=2024031821">
+  <link rel="stylesheet" href="css/animations.css?v=2024031821">
 </head>
 <body>
   <!-- Background Blobs -->
@@ -28,6 +28,9 @@
   <div class="container">
     <!-- Hero Header -->
     <header class="hero">
+      <button id="scoringInfoBtn" class="scoring-info-btn" title="Scoring Rules">
+        ⓘ
+      </button>
       <h1 class="hero-title">Badminton Tournament</h1>
     </header>
 
@@ -175,6 +178,40 @@
       </div>
     </div>
 
+    <!-- Scoring Info Modal -->
+    <div id="scoringInfoModal" class="modal-backdrop hidden">
+      <div class="modal">
+        <div class="modal-header">
+          <h2>Badminton Scoring Rules</h2>
+          <button id="closeScoringInfo" class="close-modal">×</button>
+        </div>
+        <div class="modal-body">
+          <div class="scoring-rules">
+            <h3>Valid Scores:</h3>
+            <ul>
+              <li>✅ Winner must score at least <strong>21 points</strong></li>
+              <li>✅ Must win by <strong>2 points</strong> (e.g., 21-19, 22-20)</li>
+              <li>✅ Game ends at <strong>30 points</strong> (no need to win by 2)</li>
+              <li>✅ If winner has 30, loser must have 28 or 29</li>
+            </ul>
+
+            <h3>Examples:</h3>
+            <div class="score-examples">
+              <div class="score-example valid">
+                <strong>Valid:</strong> 21-19, 22-20, 23-21, 30-28, 30-29
+              </div>
+              <div class="score-example invalid">
+                <strong>Invalid:</strong> 21-20, 23-12, 30-27, 31-29, 21-21
+              </div>
+            </div>
+
+            <h3>Why These Rules?</h3>
+            <p>Official badminton rules ensure fair play and prevent quick wins. The 2-point margin requirement (except at 30) means you must clearly outplay your opponent to win.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Floating Leaderboard Button -->
     <button id="leaderboardTab" class="leaderboard-floating-btn hidden" title="View Leaderboard">
       🏸
@@ -182,7 +219,7 @@
   </div>
 
   <!-- JavaScript Modules -->
-  <script type="module" src="js/main.js?v=2024031820"></script>
+  <script type="module" src="js/main.js?v=2024031821"></script>
 </body>
 </html>
 

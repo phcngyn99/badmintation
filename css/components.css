@@ -63,6 +63,36 @@
   position: relative;
 }
 
+.scoring-info-btn {
+  position: absolute;
+  top: var(--spacing-md);
+  left: var(--spacing-md);
+  width: 28px;
+  height: 28px;
+  background: rgba(0, 102, 204, 0.1);
+  color: var(--clay-yonex-blue);
+  border: 1px solid rgba(0, 102, 204, 0.3);
+  border-radius: 50%;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.scoring-info-btn:hover {
+  background: rgba(0, 102, 204, 0.2);
+  transform: scale(1.1);
+  box-shadow: 0 2px 8px rgba(0, 102, 204, 0.2);
+}
+
+.scoring-info-btn:active {
+  transform: scale(0.95);
+}
+
 
 
 .hero-title {
@@ -1052,6 +1082,77 @@
 
 .clear-tournament-btn:active {
   transform: scale(0.95);
+}
+
+/* Scoring Rules */
+.scoring-rules {
+  font-family: var(--font-body);
+}
+
+.scoring-rules h3 {
+  font-family: var(--font-heading);
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--clay-foreground);
+  margin-top: var(--spacing-lg);
+  margin-bottom: var(--spacing-sm);
+}
+
+.scoring-rules h3:first-child {
+  margin-top: 0;
+}
+
+.scoring-rules ul {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 var(--spacing-md) 0;
+}
+
+.scoring-rules li {
+  padding: var(--spacing-sm);
+  margin-bottom: var(--spacing-xs);
+  background: rgba(0, 102, 204, 0.05);
+  border-radius: var(--radius-sm);
+  font-size: 0.9375rem;
+  line-height: 1.6;
+}
+
+.scoring-rules p {
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: var(--clay-muted);
+  margin: 0;
+}
+
+.score-examples {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.score-example {
+  padding: var(--spacing-md);
+  border-radius: var(--radius-md);
+  font-size: 0.9375rem;
+  line-height: 1.6;
+}
+
+.score-example.valid {
+  background: rgba(0, 166, 81, 0.1);
+  border: 1px solid rgba(0, 166, 81, 0.3);
+  color: var(--clay-foreground);
+}
+
+.score-example.invalid {
+  background: rgba(255, 59, 48, 0.1);
+  border: 1px solid rgba(255, 59, 48, 0.3);
+  color: var(--clay-foreground);
+}
+
+.score-example strong {
+  font-weight: 700;
+  display: block;
+  margin-bottom: 0.25rem;
 }
 
 .leaderboard-table {
