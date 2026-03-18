@@ -56,11 +56,8 @@ export class UIController {
     document.getElementById('closeScoringInfo').addEventListener('click', () => this.hideScoringInfo());
 
     // Close scoring info when clicking backdrop
-    document.getElementById('scoringInfoModal').addEventListener('click', (e) => {
-      if (e.target.id === 'scoringInfoModal') {
-        this.hideScoringInfo();
-      }
-    });
+    const scoringModal = document.getElementById('scoringInfoModal');
+    scoringModal.querySelector('.modal-backdrop').addEventListener('click', () => this.hideScoringInfo());
 
     // Queue toggle
     document.getElementById('queueToggle').addEventListener('click', () => this.toggleQueue());

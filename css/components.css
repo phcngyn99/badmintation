@@ -1084,64 +1084,7 @@
   transform: scale(0.95);
 }
 
-/* Info Table (same style as leaderboard) */
-.info-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-bottom: var(--spacing-lg);
-  background: white;
-  border-radius: var(--radius-md);
-  overflow: hidden;
-  box-shadow: var(--shadow-clay-sm);
-}
-
-.info-table:last-child {
-  margin-bottom: 0;
-}
-
-.info-table thead th {
-  font-family: var(--font-heading);
-  font-size: 1rem;
-  font-weight: 700;
-  text-align: left;
-  padding: var(--spacing-md);
-  background: linear-gradient(135deg, var(--clay-yonex-blue-light), var(--clay-yonex-blue));
-  color: white;
-  border: none;
-}
-
-.info-table tbody td {
-  padding: var(--spacing-sm) var(--spacing-md);
-  border-bottom: 1px solid rgba(0, 102, 204, 0.05);
-  font-size: 0.875rem;
-  line-height: 1.5;
-  vertical-align: middle;
-}
-
-.info-table tbody tr:last-child td {
-  border-bottom: none;
-}
-
-.info-table tbody td:first-child {
-  font-weight: 600;
-  color: var(--clay-muted);
-  width: 35%;
-}
-
-.info-table tbody td:last-child {
-  color: var(--clay-foreground);
-}
-
-.info-table tbody td strong {
-  color: var(--clay-yonex-blue);
-  font-weight: 700;
-}
-
-.info-table tbody tr:hover {
-  background: rgba(0, 102, 204, 0.02);
-}
-
-/* Special cells for valid/invalid */
+/* Special cells for valid/invalid in info modal */
 .valid-cell {
   color: var(--clay-yonex-green) !important;
   font-weight: 700 !important;
@@ -1150,6 +1093,15 @@
 .invalid-cell {
   color: rgba(255, 59, 48, 0.9) !important;
   font-weight: 700 !important;
+}
+
+/* Info modal tables spacing */
+#scoringInfoModal .leaderboard-table {
+  margin-bottom: var(--spacing-lg);
+}
+
+#scoringInfoModal .leaderboard-table:last-child {
+  margin-bottom: 0;
 }
 
 .leaderboard-table {

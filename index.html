@@ -13,9 +13,9 @@
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
   
   <!-- Stylesheets -->
-  <link rel="stylesheet" href="css/design-system.css?v=2024031824">
-  <link rel="stylesheet" href="css/components.css?v=2024031824">
-  <link rel="stylesheet" href="css/animations.css?v=2024031824">
+  <link rel="stylesheet" href="css/design-system.css?v=2024031825">
+  <link rel="stylesheet" href="css/components.css?v=2024031825">
+  <link rel="stylesheet" href="css/animations.css?v=2024031825">
 </head>
 <body>
   <!-- Background Blobs -->
@@ -179,14 +179,15 @@
     </div>
 
     <!-- Scoring Info Modal -->
-    <div id="scoringInfoModal" class="modal-backdrop hidden">
-      <div class="modal">
+    <div id="scoringInfoModal" class="modal hidden">
+      <div class="modal-backdrop"></div>
+      <div class="modal-content">
         <div class="modal-header">
-          <h2>Tournament Guide</h2>
-          <button id="closeScoringInfo" class="close-modal">×</button>
+          <h2 class="modal-title">Tournament Guide</h2>
+          <button id="closeScoringInfo" class="btn-close">×</button>
         </div>
         <div class="modal-body">
-          <table class="info-table">
+          <table class="leaderboard-table">
             <thead>
               <tr>
                 <th colspan="2">👥 Player Requirements</th>
@@ -212,7 +213,7 @@
             </tbody>
           </table>
 
-          <table class="info-table">
+          <table class="leaderboard-table">
             <thead>
               <tr>
                 <th colspan="2">🏸 Tournament Modes</th>
@@ -230,7 +231,7 @@
             </tbody>
           </table>
 
-          <table class="info-table">
+          <table class="leaderboard-table">
             <thead>
               <tr>
                 <th colspan="2">🏟️ Court Configuration</th>
@@ -256,7 +257,7 @@
             </tbody>
           </table>
 
-          <table class="info-table">
+          <table class="leaderboard-table">
             <thead>
               <tr>
                 <th colspan="2">🎯 Scoring Rules</th>
@@ -282,7 +283,7 @@
             </tbody>
           </table>
 
-          <table class="info-table">
+          <table class="leaderboard-table">
             <thead>
               <tr>
                 <th colspan="2">📊 Score Examples</th>
@@ -310,7 +311,7 @@
   </div>
 
   <!-- JavaScript Modules -->
-  <script type="module" src="js/main.js?v=2024031824"></script>
+  <script type="module" src="js/main.js?v=2024031825"></script>
 </body>
 </html>
 
