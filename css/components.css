@@ -186,6 +186,10 @@
   gap: var(--spacing-md);
 }
 
+.section-header.centered {
+  justify-content: center;
+}
+
 .player-count-badge {
   display: flex;
   flex-direction: column;
@@ -1030,32 +1034,46 @@
 .rank-2 { background: linear-gradient(135deg, #D1D5DB, #9CA3AF); color: white; }
 .rank-3 { background: linear-gradient(135deg, #FBBF24, #D97706); color: white; }
 
-.leaderboard-tab {
+/* Floating Leaderboard Button */
+.leaderboard-floating-btn {
   position: fixed;
   bottom: var(--spacing-lg);
-  left: 50%;
-  transform: translateX(-50%);
+  right: var(--spacing-lg);
   z-index: 100;
-  padding: var(--spacing-md) var(--spacing-xl);
-  background: linear-gradient(135deg, var(--clay-yonex-blue-light), var(--clay-yonex-blue));
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(135deg, var(--clay-yonex-blue), var(--clay-yonex-lime));
   color: white;
   border: none;
-  border-radius: 999px;
-  font-family: var(--font-heading);
-  font-size: 1rem;
-  font-weight: 700;
-  box-shadow: var(--shadow-clay-button);
+  border-radius: 50%;
+  font-size: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 102, 204, 0.3);
   cursor: pointer;
   transition: all var(--transition-base);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: pulse 2s ease-in-out infinite;
 }
 
-.leaderboard-tab:hover {
-  transform: translateX(-50%) translateY(-4px);
-  box-shadow: var(--shadow-clay-button-hover);
+.leaderboard-floating-btn:hover {
+  transform: translateY(-4px) scale(1.05);
+  box-shadow: 0 6px 20px rgba(0, 102, 204, 0.4);
+  animation: none;
 }
 
-.leaderboard-tab:active {
-  transform: translateX(-50%) scale(0.95);
+.leaderboard-floating-btn:active {
+  transform: scale(0.95);
+}
+
+/* Pulse animation for floating button */
+@keyframes pulse {
+  0%, 100% {
+    box-shadow: 0 4px 12px rgba(0, 102, 204, 0.3);
+  }
+  50% {
+    box-shadow: 0 4px 20px rgba(0, 102, 204, 0.5);
+  }
 }
 
 /* ===========================

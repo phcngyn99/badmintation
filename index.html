@@ -13,9 +13,9 @@
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
   
   <!-- Stylesheets -->
-  <link rel="stylesheet" href="css/design-system.css?v=2024031810">
-  <link rel="stylesheet" href="css/components.css?v=2024031810">
-  <link rel="stylesheet" href="css/animations.css?v=2024031810">
+  <link rel="stylesheet" href="css/design-system.css?v=2024031811">
+  <link rel="stylesheet" href="css/components.css?v=2024031811">
+  <link rel="stylesheet" href="css/animations.css?v=2024031811">
 </head>
 <body>
   <!-- Background Blobs -->
@@ -34,7 +34,7 @@
     <!-- Player Management (Pre-Tournament) -->
     <section id="playerManagement" class="section">
       <div class="card">
-        <div class="section-header">
+        <div class="section-header centered">
           <div class="player-count-badge" id="playerCountBadge">
             <span class="player-count-number" id="playerCount">0</span>
             <span class="player-count-label">Players</span>
@@ -168,13 +168,14 @@
       </div>
     </div>
 
-    <button id="leaderboardTab" class="leaderboard-tab hidden">
-      View Leaderboard
+    <!-- Floating Leaderboard Button -->
+    <button id="leaderboardTab" class="leaderboard-floating-btn hidden" title="View Leaderboard">
+      📊
     </button>
   </div>
 
   <!-- JavaScript Modules -->
-  <script type="module" src="js/main.js?v=2024031810"></script>
+  <script type="module" src="js/main.js?v=2024031811"></script>
 </body>
 </html>
 
