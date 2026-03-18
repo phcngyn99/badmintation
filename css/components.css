@@ -1084,13 +1084,51 @@
   transform: scale(0.95);
 }
 
-/* Info modal tables spacing */
+/* Info modal tables - Clay/Neumorphic style like Add Player button */
 #scoringInfoModal .leaderboard-table {
   margin-bottom: var(--spacing-lg);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-clay-button);
+  overflow: hidden;
+  border: none;
 }
 
 #scoringInfoModal .leaderboard-table:last-child {
   margin-bottom: 0;
+}
+
+/* Clay-style headers */
+.info-table-blue thead th {
+  background: linear-gradient(135deg, var(--clay-yonex-blue-light), var(--clay-yonex-blue));
+  color: white;
+  padding: var(--spacing-md) var(--spacing-lg);
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 1rem;
+  text-align: left;
+  border: none;
+}
+
+.info-table-lime thead th {
+  background: linear-gradient(135deg, var(--clay-yonex-lime-light), var(--clay-yonex-lime));
+  color: var(--clay-foreground);
+  padding: var(--spacing-md) var(--spacing-lg);
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 1rem;
+  text-align: left;
+  border: none;
+}
+
+.info-table-green thead th {
+  background: linear-gradient(135deg, rgba(0, 166, 81, 0.7), var(--clay-yonex-green));
+  color: white;
+  padding: var(--spacing-md) var(--spacing-lg);
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 1rem;
+  text-align: left;
+  border: none;
 }
 
 /* Info modal table cells */
@@ -1099,7 +1137,10 @@
   font-weight: 600;
   font-size: 0.875rem;
   color: var(--clay-muted);
-  width: 30%;
+  width: 35%;
+  padding: var(--spacing-sm) var(--spacing-lg);
+  background: rgba(255, 255, 255, 0.5);
+  border: none;
 }
 
 .info-value {
@@ -1107,20 +1148,22 @@
   font-size: 0.875rem;
   color: var(--clay-foreground);
   line-height: 1.6;
+  padding: var(--spacing-sm) var(--spacing-lg);
+  background: rgba(255, 255, 255, 0.5);
+  border: none;
 }
 
-/* Colored table headers using theme colors */
-.info-table-blue thead th {
-  background: linear-gradient(135deg, var(--clay-yonex-blue-light), var(--clay-yonex-blue));
+#scoringInfoModal .leaderboard-table tbody tr {
+  border: none;
 }
 
-.info-table-lime thead th {
-  background: linear-gradient(135deg, var(--clay-yonex-lime-light), var(--clay-yonex-lime));
-  color: var(--clay-foreground);
+#scoringInfoModal .leaderboard-table tbody td {
+  border: none;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
 }
 
-.info-table-green thead th {
-  background: linear-gradient(135deg, rgba(0, 166, 81, 0.7), var(--clay-yonex-green));
+#scoringInfoModal .leaderboard-table tbody tr:last-child td {
+  border-bottom: none;
 }
 
 .leaderboard-table {
