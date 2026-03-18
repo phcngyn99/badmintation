@@ -1098,7 +1098,7 @@
 }
 
 .status-summary.completed {
-  background: var(--clay-success);
+  background: var(--clay-yonex-green);
   color: white;
 }
 
@@ -1178,7 +1178,7 @@
 }
 
 .match-status-badge.completed {
-  background: var(--clay-success);
+  background: var(--clay-yonex-green);
   color: white;
 }
 
