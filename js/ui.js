@@ -657,6 +657,43 @@ export class UIController {
     this.state.completeMatch(matchId, score1, score2);
   }
 
+  renderUpNext() {
+    const allMatches = this.state.matches;
+    const upNextSection = document.getElementById('upNextSection');
+    const upNextList = document.getElementById('upNextList');
+
+    if (!upNextSection || !upNextList) return;
+
+    const pendingMatches = allMatches.filter(m => m.status === 'pending');
+    const upcomingMatches = pendingMatches.slice(0, 3);
+
+    if (upcomingMatches.length > 0) {
+      upNextSection.classList.remove('hidden');
+
+      upNextList.innerHTML = upcomingMatches.map((match) => {
+        const matchNum = allMatches.indexOf(match) + 1;
+        return `
+          <div class="up-next-match">
+            <span class="up-next-number">#${matchNum}</span>
+            <div class="up-next-teams">
+              <span class="player-avatar-small">${match.team1.player1.avatar || '👤'}</span>
+              ${this.escapeHtml(match.team1.player1.name)} &
+              <span class="player-avatar-small">${match.team1.player2.avatar || '👤'}</span>
+              ${this.escapeHtml(match.team1.player2.name)}
+              <span class="vs-text">vs</span>
+              <span class="player-avatar-small">${match.team2.player1.avatar || '👤'}</span>
+              ${this.escapeHtml(match.team2.player1.name)} &
+              <span class="player-avatar-small">${match.team2.player2.avatar || '👤'}</span>
+              ${this.escapeHtml(match.team2.player2.name)}
+            </div>
+          </div>
+        `;
+      }).join('');
+    } else {
+      upNextSection.classList.add('hidden');
+    }
+  }
+
   renderQueue() {
     const allMatches = this.state.matches;
     const countEl = document.getElementById('queueCount');
@@ -671,53 +708,26 @@ export class UIController {
     const inProgressCount = inProgressMatches.length;
     const pendingCount = pendingMatches.length;
 
-    // Update summary with counts only (no icons)
+    // Update summary with icons
     countEl.innerHTML = `
-      <span class="status-summary completed">${completedCount}</span>
-      <span class="status-summary in-progress">${inProgressCount}</span>
-      <span class="status-summary pending">${pendingCount}</span>
+      <span class="status-summary completed">✓ ${completedCount}</span>
+      <span class="status-summary in-progress">▶ ${inProgressCount}</span>
+      <span class="status-summary pending">⏳ ${pendingCount}</span>
     `;
 
-    // Build upcoming matches row (next 3 pending matches)
-    const upcomingMatches = pendingMatches.slice(0, 3);
-    let upcomingRow = '';
-
-    if (upcomingMatches.length > 0) {
-      upcomingRow = `
-        <div class="upcoming-matches-row">
-          <div class="upcoming-label">Up Next:</div>
-          <div class="upcoming-list">
-            ${upcomingMatches.map((match, idx) => {
-              const matchNum = allMatches.indexOf(match) + 1;
-              return `
-                <div class="upcoming-match-mini">
-                  <span class="upcoming-match-number">#${matchNum}</span>
-                  <span class="upcoming-match-teams">
-                    ${this.escapeHtml(match.team1.player1.name.split(' ')[0])} & ${this.escapeHtml(match.team1.player2.name.split(' ')[0])}
-                    vs
-                    ${this.escapeHtml(match.team2.player1.name.split(' ')[0])} & ${this.escapeHtml(match.team2.player2.name.split(' ')[0])}
-                  </span>
-                </div>
-              `;
-            }).join('')}
-          </div>
-        </div>
-      `;
-    }
-
     // Build full match list
-    const matchList = allMatches.map((match, index) => {
+    listEl.innerHTML = allMatches.map((match, index) => {
       let statusBadge = '';
       let statusClass = '';
 
       if (match.status === 'completed') {
-        statusBadge = `<span class="match-status-badge completed">${match.team1Score}-${match.team2Score}</span>`;
+        statusBadge = `<span class="match-status-badge completed">✓ ${match.team1Score}-${match.team2Score}</span>`;
         statusClass = 'completed';
       } else if (match.status === 'in-progress') {
-        statusBadge = `<span class="match-status-badge in-progress">Court ${match.courtNumber}</span>`;
+        statusBadge = `<span class="match-status-badge in-progress">▶ Court ${match.courtNumber}</span>`;
         statusClass = 'in-progress';
       } else {
-        statusBadge = `<span class="match-status-badge pending">Pending</span>`;
+        statusBadge = `<span class="match-status-badge pending">⏳ Pending</span>`;
         statusClass = 'pending';
       }
 
@@ -740,7 +750,8 @@ export class UIController {
       `;
     }).join('');
 
-    listEl.innerHTML = upcomingRow + matchList;
+    // Also render up next section
+    this.renderUpNext();
   }
 
   toggleQueue() {
