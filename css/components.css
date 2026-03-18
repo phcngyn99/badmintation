@@ -1109,6 +1109,20 @@
   line-height: 1.6;
 }
 
+/* Colored table headers using theme colors */
+.info-table-blue thead th {
+  background: linear-gradient(135deg, var(--clay-yonex-blue-light), var(--clay-yonex-blue));
+}
+
+.info-table-lime thead th {
+  background: linear-gradient(135deg, var(--clay-yonex-lime-light), var(--clay-yonex-lime));
+  color: var(--clay-foreground);
+}
+
+.info-table-green thead th {
+  background: linear-gradient(135deg, rgba(0, 166, 81, 0.7), var(--clay-yonex-green));
+}
+
 .leaderboard-table {
   width: 100%;
   border-collapse: collapse;
