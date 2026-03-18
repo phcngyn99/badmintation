@@ -493,7 +493,7 @@ export class UIController {
   updateModePreview() {
     // Trigger match preview update when mode changes
     const players = this.state.getPlayers();
-    if (players.length >= 6) {
+    if (players.length >= 4) {
       this.updateMatchPreview(players);
     }
   }
