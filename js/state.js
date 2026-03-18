@@ -114,9 +114,13 @@ export class TournamentState {
     // Get all pending matches
     const availableMatches = this.matches.filter(m => m.status === 'pending');
 
-    // Fill all available courts
-    const courtsToFill = Math.min(this.courtCount, availableMatches.length);
+    console.log('🏟️ assignMatchesToCourts called:');
+    console.log('  Total matches:', this.matches.length);
+    console.log('  Available (pending) matches:', availableMatches.length);
+    console.log('  Court count:', this.courtCount);
+    console.log('  Current matches:', this.currentMatches.length);
 
+    // Fill all available courts
     for (let courtNum = 1; courtNum <= this.courtCount; courtNum++) {
       // Check if this court already has a match
       const courtHasMatch = this.currentMatches.some(m => m.courtNumber === courtNum);
@@ -127,8 +131,15 @@ export class TournamentState {
         match.status = 'in-progress';
         match.courtNumber = courtNum;
         this.currentMatches.push(match);
+        console.log(`  ✅ Assigned Match ${match.id} to Court ${courtNum}`);
+      } else if (courtHasMatch) {
+        console.log(`  ⏭️  Court ${courtNum} already has a match`);
+      } else {
+        console.log(`  ❌ Court ${courtNum} - no available matches`);
       }
     }
+
+    console.log('  Final current matches:', this.currentMatches.length);
   }
 
   completeMatch(matchId, team1Score, team2Score) {

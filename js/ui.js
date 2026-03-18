@@ -127,7 +127,11 @@ export class UIController {
       return;
     }
 
-    console.log('Starting tournament with mode:', mode, 'players:', players.length);
+    console.log('Starting tournament with mode:', mode, 'players:', players.length, 'courts:', courtCount);
+
+    // IMPORTANT: Set court count FIRST before generating/assigning matches
+    this.state.courtCount = courtCount;
+    this.state.setTournamentMode(mode);
 
     // Generate matches with court count for optimal rest scheduling
     const scheduler = new MatchScheduler(players, mode);
@@ -135,8 +139,10 @@ export class UIController {
 
     console.log('Generated matches:', matches.length);
 
+    // Set matches (this will call assignMatchesToCourts with correct courtCount)
     this.state.setMatches(matches);
-    this.state.setTournamentMode(mode);
+
+    // Start tournament (activates tournament mode)
     this.state.startTournament(courtCount);
   }
 
