@@ -69,9 +69,9 @@
   left: var(--spacing-md);
   width: 28px;
   height: 28px;
-  background: rgba(0, 102, 204, 0.1);
-  color: var(--clay-yonex-blue);
-  border: 1px solid rgba(0, 102, 204, 0.3);
+  background: rgba(185, 242, 72, 0.2);
+  color: #B5A000;
+  border: 1px solid rgba(185, 242, 72, 0.5);
   border-radius: 50%;
   font-size: 1rem;
   font-weight: 700;
@@ -84,9 +84,9 @@
 }
 
 .scoring-info-btn:hover {
-  background: rgba(0, 102, 204, 0.2);
+  background: rgba(185, 242, 72, 0.3);
   transform: scale(1.1);
-  box-shadow: 0 2px 8px rgba(0, 102, 204, 0.2);
+  box-shadow: 0 2px 8px rgba(185, 242, 72, 0.4);
 }
 
 .scoring-info-btn:active {
@@ -1091,11 +1091,13 @@
 
 .scoring-rules h3 {
   font-family: var(--font-heading);
-  font-size: 1.125rem;
+  font-size: 1rem;
   font-weight: 700;
-  color: var(--clay-foreground);
-  margin-top: var(--spacing-lg);
+  color: var(--clay-yonex-blue);
+  margin-top: var(--spacing-md);
   margin-bottom: var(--spacing-sm);
+  padding-bottom: var(--spacing-xs);
+  border-bottom: 2px solid rgba(0, 102, 204, 0.1);
 }
 
 .scoring-rules h3:first-child {
@@ -1109,50 +1111,60 @@
 }
 
 .scoring-rules li {
-  padding: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-md);
   margin-bottom: var(--spacing-xs);
-  background: rgba(0, 102, 204, 0.05);
+  background: linear-gradient(135deg, rgba(0, 102, 204, 0.03), rgba(185, 242, 72, 0.03));
+  border-left: 3px solid var(--clay-yonex-lime);
   border-radius: var(--radius-sm);
-  font-size: 0.9375rem;
-  line-height: 1.6;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.scoring-rules li strong {
+  color: var(--clay-yonex-blue);
+  font-weight: 700;
 }
 
 .scoring-rules p {
-  font-size: 0.9375rem;
+  font-size: 0.875rem;
   line-height: 1.6;
   color: var(--clay-muted);
   margin: 0;
+  padding: var(--spacing-sm);
+  background: rgba(0, 102, 204, 0.03);
+  border-radius: var(--radius-sm);
 }
 
 .score-examples {
-  display: flex;
-  flex-direction: column;
+  display: grid;
   gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-md);
 }
 
 .score-example {
   padding: var(--spacing-md);
   border-radius: var(--radius-md);
-  font-size: 0.9375rem;
-  line-height: 1.6;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .score-example.valid {
-  background: rgba(0, 166, 81, 0.1);
-  border: 1px solid rgba(0, 166, 81, 0.3);
-  color: var(--clay-foreground);
+  background: linear-gradient(135deg, rgba(0, 166, 81, 0.08), rgba(0, 166, 81, 0.12));
+  border-left: 4px solid var(--clay-yonex-green);
 }
 
 .score-example.invalid {
-  background: rgba(255, 59, 48, 0.1);
-  border: 1px solid rgba(255, 59, 48, 0.3);
-  color: var(--clay-foreground);
+  background: linear-gradient(135deg, rgba(255, 59, 48, 0.08), rgba(255, 59, 48, 0.12));
+  border-left: 4px solid rgba(255, 59, 48, 0.8);
 }
 
 .score-example strong {
   font-weight: 700;
+  font-size: 0.9375rem;
   display: block;
-  margin-bottom: 0.25rem;
+  margin-bottom: var(--spacing-xs);
+  color: var(--clay-foreground);
 }
 
 .leaderboard-table {
