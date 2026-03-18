@@ -13,9 +13,9 @@
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
   
   <!-- Stylesheets -->
-  <link rel="stylesheet" href="css/design-system.css?v=2024031825">
-  <link rel="stylesheet" href="css/components.css?v=2024031825">
-  <link rel="stylesheet" href="css/animations.css?v=2024031825">
+  <link rel="stylesheet" href="css/design-system.css?v=2024031826">
+  <link rel="stylesheet" href="css/components.css?v=2024031826">
+  <link rel="stylesheet" href="css/animations.css?v=2024031826">
 </head>
 <body>
   <!-- Background Blobs -->
@@ -195,20 +195,20 @@
             </thead>
             <tbody>
               <tr>
-                <td>Minimum Players</td>
-                <td><strong>4 players</strong> (2 pairs)</td>
+                <td class="info-label">Minimum</td>
+                <td class="info-value">4 players (2 pairs)</td>
               </tr>
               <tr>
-                <td>Maximum Players</td>
-                <td><strong>16 players</strong> (8 pairs)</td>
+                <td class="info-label">Maximum</td>
+                <td class="info-value">16 players (8 pairs)</td>
               </tr>
               <tr>
-                <td>Avatars</td>
-                <td>70+ unique avatars available</td>
+                <td class="info-label">Avatars</td>
+                <td class="info-value">70+ unique options</td>
               </tr>
               <tr>
-                <td>Shuffle</td>
-                <td>Randomize player order</td>
+                <td class="info-label">Shuffle</td>
+                <td class="info-value">Randomize order</td>
               </tr>
             </tbody>
           </table>
@@ -221,12 +221,12 @@
             </thead>
             <tbody>
               <tr>
-                <td><strong>Round-Robin</strong></td>
-                <td>6-9 players. Everyone partners with everyone. Best for social play.</td>
+                <td class="info-label">Round-Robin</td>
+                <td class="info-value">6-9 players • Everyone partners with everyone</td>
               </tr>
               <tr>
-                <td><strong>Random Pairs</strong></td>
-                <td>4-16 players. Fixed pairs compete. Best for competitive play.</td>
+                <td class="info-label">Random Pairs</td>
+                <td class="info-value">4-16 players • Fixed pairs compete</td>
               </tr>
             </tbody>
           </table>
@@ -239,20 +239,20 @@
             </thead>
             <tbody>
               <tr>
-                <td>Courts Supported</td>
-                <td><strong>1-6 courts</strong></td>
+                <td class="info-label">Supported</td>
+                <td class="info-value">1-6 courts</td>
               </tr>
               <tr>
-                <td>Random Pairs Minimum</td>
-                <td><strong>2 courts</strong> (for parallel play)</td>
+                <td class="info-label">RP Minimum</td>
+                <td class="info-value">2 courts (parallel play)</td>
               </tr>
               <tr>
-                <td>Recommendation</td>
-                <td>System suggests optimal court count</td>
+                <td class="info-label">Auto-suggest</td>
+                <td class="info-value">Optimal court count</td>
               </tr>
               <tr>
-                <td>Efficiency</td>
-                <td>All courts filled at tournament start</td>
+                <td class="info-label">Efficiency</td>
+                <td class="info-value">All courts filled at start</td>
               </tr>
             </tbody>
           </table>
@@ -265,41 +265,25 @@
             </thead>
             <tbody>
               <tr>
-                <td>Minimum Score</td>
-                <td>Winner must score <strong>≥21 points</strong></td>
+                <td class="info-label">Minimum</td>
+                <td class="info-value">Winner ≥21 points</td>
               </tr>
               <tr>
-                <td>Win Margin</td>
-                <td>Must win by <strong>2 points</strong> (e.g., 21-19, 22-20)</td>
+                <td class="info-label">Win By</td>
+                <td class="info-value">2 points (21-19, 22-20)</td>
               </tr>
               <tr>
-                <td>Maximum Score</td>
-                <td>Game ends at <strong>30 points</strong> (no need to win by 2)</td>
+                <td class="info-label">Maximum</td>
+                <td class="info-value">30 points (no win by 2)</td>
               </tr>
               <tr>
-                <td>Special Rule</td>
-                <td>If winner has 30, loser must have 28 or 29</td>
+                <td class="info-label">At 30</td>
+                <td class="info-value">Loser must be 28 or 29</td>
               </tr>
             </tbody>
           </table>
 
-          <table class="leaderboard-table">
-            <thead>
-              <tr>
-                <th colspan="2">📊 Score Examples</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td class="valid-cell">✅ Valid</td>
-                <td>21-19, 22-20, 23-21, 24-22, 30-28, 30-29</td>
-              </tr>
-              <tr>
-                <td class="invalid-cell">❌ Invalid</td>
-                <td>21-20 (not win by 2), 23-12 (not win by 2), 30-27 (loser &lt; 28), 31-29 (max is 30), 21-21 (no ties)</td>
-              </tr>
-            </tbody>
-          </table>
+
         </div>
       </div>
     </div>
@@ -311,7 +295,7 @@
   </div>
 
   <!-- JavaScript Modules -->
-  <script type="module" src="js/main.js?v=2024031825"></script>
+  <script type="module" src="js/main.js?v=2024031826"></script>
 </body>
 </html>
 

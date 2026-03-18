@@ -1084,17 +1084,6 @@
   transform: scale(0.95);
 }
 
-/* Special cells for valid/invalid in info modal */
-.valid-cell {
-  color: var(--clay-yonex-green) !important;
-  font-weight: 700 !important;
-}
-
-.invalid-cell {
-  color: rgba(255, 59, 48, 0.9) !important;
-  font-weight: 700 !important;
-}
-
 /* Info modal tables spacing */
 #scoringInfoModal .leaderboard-table {
   margin-bottom: var(--spacing-lg);
@@ -1102,6 +1091,22 @@
 
 #scoringInfoModal .leaderboard-table:last-child {
   margin-bottom: 0;
+}
+
+/* Info modal table cells */
+.info-label {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: var(--clay-muted);
+  width: 30%;
+}
+
+.info-value {
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  color: var(--clay-foreground);
+  line-height: 1.6;
 }
 
 .leaderboard-table {
