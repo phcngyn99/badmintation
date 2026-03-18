@@ -359,14 +359,11 @@ export class UIController {
   }
 
   calculateRandomMatches(playerCount) {
-    // For random mode, calculate reasonable number of matches
-    // Each match uses 4 players, so we want enough matches for variety
-    // Formula: aim for each player to play 6-8 matches
-    const targetMatchesPerPlayer = 7;
-    const totalPlayerSlots = targetMatchesPerPlayer * playerCount;
-    const matches = Math.floor(totalPlayerSlots / 4);
-
-    return Math.min(matches, 30); // Cap at 30 matches
+    // For Random Pairs mode: fixed pairs, round-robin for pairs
+    // Formula: pairs = floor(players / 2), matches = C(pairs, 2) = pairs * (pairs - 1) / 2
+    const pairs = Math.floor(playerCount / 2);
+    const matches = pairs * (pairs - 1) / 2;
+    return matches;
   }
 
   updateMatchPreview(players) {
