@@ -178,6 +178,11 @@
   margin-top: var(--spacing-md);
 }
 
+.button-container-center .btn {
+  width: 100%;
+  max-width: 400px;
+}
+
 @media (min-width: 640px) {
   .btn-full { width: auto; }
 }
