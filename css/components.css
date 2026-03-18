@@ -919,10 +919,26 @@
 
 .vs-divider {
   text-align: center;
-  font-size: 0.875rem;
+  font-size: 1.25rem;
   font-weight: 700;
-  color: var(--clay-muted);
+  color: var(--clay-yonex-blue);
   margin: var(--spacing-md) 0;
+  background: linear-gradient(135deg, var(--clay-yonex-blue-light), var(--clay-yonex-lime-light));
+  padding: var(--spacing-xs) var(--spacing-md);
+  border-radius: var(--radius-md);
+  box-shadow: 0 2px 4px rgba(0, 102, 204, 0.1);
+}
+
+/* Complete Match Button Container */
+.complete-match-container {
+  display: flex;
+  justify-content: center;
+  margin-top: var(--spacing-md);
+}
+
+.complete-match-container .btn {
+  width: 100%;
+  max-width: 100%;
 }
 
 .score-inputs {

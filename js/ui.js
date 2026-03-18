@@ -636,9 +636,11 @@ export class UIController {
         </div>
       </div>
 
-      <button class="btn btn-primary btn-md btn-full" onclick="window.uiController.completeMatch('${match.id}')">
-        Complete Match
-      </button>
+      <div class="complete-match-container">
+        <button class="btn btn-primary btn-md" onclick="window.uiController.completeMatch('${match.id}')">
+          Complete Match
+        </button>
+      </div>
     `;
 
     return card;
