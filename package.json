@@ -1,0 +1,30 @@
+{
+  "name": "badminton-tournament-scheduler",
+  "version": "1.0.0",
+  "description": "Badminton Tournament Scheduler - Optimized for Netlify",
+  "scripts": {
+    "build": "npm run clean && npm run minify:html && npm run minify:css && npm run minify:js && npm run copy",
+    "clean": "rm -rf dist && mkdir -p dist dist/css dist/js",
+    "minify:html": "html-minifier --collapse-whitespace --remove-comments --minify-css true --minify-js true -o dist/index.html index.html",
+    "minify:css": "for file in css/*.css; do cleancss -o dist/$file $file; done",
+    "minify:js": "for file in js/*.js; do terser $file -o dist/$file -c -m; done",
+    "copy": "cp _headers dist/_headers && cp netlify.toml dist/netlify.toml && cp README.md dist/README.md 2>/dev/null || true",
+    "analyze": "echo 'Original size:' && du -sh . && echo 'Optimized size:' && du -sh dist",
+    "dev": "python3 -m http.server 8080",
+    "dev:dist": "cd dist && python3 -m http.server 8080"
+  },
+  "devDependencies": {
+    "clean-css-cli": "^5.6.3",
+    "html-minifier": "^4.0.0",
+    "terser": "^5.31.0"
+  },
+  "keywords": [
+    "badminton",
+    "tournament",
+    "scheduler",
+    "sports"
+  ],
+  "author": "Phuc C. Nguyen",
+  "license": "MIT"
+}
+

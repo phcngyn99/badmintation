@@ -1,7 +1,8 @@
 # netlify.toml - Badminton Tournament Scheduler
 
 [build]
-  publish = "."
+  command = "bash build.sh"
+  publish = "dist"
 
 # Enable automatic optimization and compression
 [build.processing]
