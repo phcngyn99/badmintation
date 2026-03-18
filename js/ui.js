@@ -189,14 +189,22 @@ export class UIController {
       const roster = document.getElementById('playerRoster');
       const setup = document.getElementById('tournamentSetup');
       const playerCountEl = document.getElementById('playerCount');
+      const playerCountBadge = document.getElementById('playerCountBadge');
 
       if (!roster || !setup || !playerCountEl) {
         console.error('Required elements not found');
         return;
       }
 
-      // Update player count badge
+      // Update player count badge and visibility
       playerCountEl.textContent = players.length;
+
+      // Hide badge when 0 players
+      if (players.length === 0) {
+        playerCountBadge.classList.add('hidden');
+      } else {
+        playerCountBadge.classList.remove('hidden');
+      }
 
       roster.innerHTML = players.map(player => `
         <div class="player-card animate-fade-in">
