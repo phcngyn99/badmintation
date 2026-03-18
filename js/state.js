@@ -22,6 +22,55 @@ export class TournamentState {
       '🐉', '🐲', '🦎', '🐢', '🐊', '🐍', '🐳', '🐋',
       '🐬', '🦈', '🐟', '🐠', '🐡', '🦐', '🦑', '🐚'
     ];
+
+    // Load saved state from localStorage
+    this.loadState();
+  }
+
+  // LocalStorage persistence
+  saveState() {
+    try {
+      const state = {
+        players: this.players,
+        matches: this.matches,
+        currentMatches: this.currentMatches,
+        completedMatches: this.completedMatches,
+        courtCount: this.courtCount,
+        tournamentActive: this.tournamentActive,
+        tournamentMode: this.tournamentMode,
+        usedAvatars: Array.from(this.usedAvatars)
+      };
+      localStorage.setItem('badmintonTournamentState', JSON.stringify(state));
+    } catch (error) {
+      console.error('Failed to save state:', error);
+    }
+  }
+
+  loadState() {
+    try {
+      const saved = localStorage.getItem('badmintonTournamentState');
+      if (saved) {
+        const state = JSON.parse(saved);
+        this.players = state.players || [];
+        this.matches = state.matches || [];
+        this.currentMatches = state.currentMatches || [];
+        this.completedMatches = state.completedMatches || [];
+        this.courtCount = state.courtCount || 1;
+        this.tournamentActive = state.tournamentActive || false;
+        this.tournamentMode = state.tournamentMode || 'balanced';
+        this.usedAvatars = new Set(state.usedAvatars || []);
+      }
+    } catch (error) {
+      console.error('Failed to load state:', error);
+    }
+  }
+
+  clearState() {
+    try {
+      localStorage.removeItem('badmintonTournamentState');
+    } catch (error) {
+      console.error('Failed to clear state:', error);
+    }
   }
 
   // Player Management
@@ -181,6 +230,7 @@ export class TournamentState {
   }
 
   notify() {
+    this.saveState(); // Save to localStorage on every state change
     this.listeners.forEach(listener => listener(this));
   }
 

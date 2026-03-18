@@ -48,6 +48,9 @@ export class UIController {
     document.getElementById('closeLeaderboard').addEventListener('click', () => this.hideLeaderboard());
     document.querySelector('.modal-backdrop').addEventListener('click', () => this.hideLeaderboard());
 
+    // Clear tournament
+    document.getElementById('clearTournamentBtn').addEventListener('click', () => this.handleClearTournament());
+
     // Queue toggle
     document.getElementById('queueToggle').addEventListener('click', () => this.toggleQueue());
   }
@@ -519,6 +522,14 @@ export class UIController {
   }
 
   render() {
+    // Show/hide clear tournament button
+    const clearBtn = document.getElementById('clearTournamentBtn');
+    if (this.state.players.length > 0 || this.state.tournamentActive) {
+      clearBtn.classList.remove('hidden');
+    } else {
+      clearBtn.classList.add('hidden');
+    }
+
     if (!this.state.tournamentActive) {
       this.renderPlayerManagement();
     } else {
@@ -890,6 +901,13 @@ export class UIController {
 
   hideLeaderboard() {
     document.getElementById('leaderboardModal').classList.add('hidden');
+  }
+
+  handleClearTournament() {
+    if (confirm('Are you sure you want to clear the tournament? This will delete all players, matches, and progress.')) {
+      this.state.clearState();
+      location.reload(); // Reload page to reset everything
+    }
   }
 }
 // Updated: Wed Mar 18 09:02:28 +07 2026
