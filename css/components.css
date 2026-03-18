@@ -63,31 +63,7 @@
   position: relative;
 }
 
-.clear-tournament-btn {
-  position: absolute;
-  top: var(--spacing-md);
-  right: var(--spacing-md);
-  background: rgba(255, 59, 48, 0.9);
-  color: white;
-  border: none;
-  padding: 0.5rem 1rem;
-  border-radius: var(--radius-md);
-  font-size: 0.875rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all var(--transition-base);
-  box-shadow: 0 2px 8px rgba(255, 59, 48, 0.3);
-}
 
-.clear-tournament-btn:hover {
-  background: rgba(255, 59, 48, 1);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(255, 59, 48, 0.4);
-}
-
-.clear-tournament-btn:active {
-  transform: scale(0.95);
-}
 
 .hero-title {
   font-size: 2.25rem;
@@ -1035,6 +1011,36 @@
   padding: var(--spacing-lg);
   overflow-y: auto;
   max-height: calc(90vh - 80px);
+}
+
+.modal-footer {
+  padding: var(--spacing-lg);
+  border-top: 2px solid rgba(0, 102, 204, 0.15);
+  display: flex;
+  justify-content: center;
+}
+
+.clear-tournament-btn {
+  background: rgba(255, 59, 48, 0.9);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--radius-md);
+  font-size: 0.875rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  box-shadow: 0 2px 8px rgba(255, 59, 48, 0.3);
+}
+
+.clear-tournament-btn:hover {
+  background: rgba(255, 59, 48, 1);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 59, 48, 0.4);
+}
+
+.clear-tournament-btn:active {
+  transform: scale(0.95);
 }
 
 .leaderboard-table {

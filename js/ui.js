@@ -522,14 +522,6 @@ export class UIController {
   }
 
   render() {
-    // Show/hide clear tournament button
-    const clearBtn = document.getElementById('clearTournamentBtn');
-    if (this.state.players.length > 0 || this.state.tournamentActive) {
-      clearBtn.classList.remove('hidden');
-    } else {
-      clearBtn.classList.add('hidden');
-    }
-
     if (!this.state.tournamentActive) {
       this.renderPlayerManagement();
     } else {
@@ -904,7 +896,15 @@ export class UIController {
   }
 
   handleClearTournament() {
-    if (confirm('Are you sure you want to clear the tournament? This will delete all players, matches, and progress.')) {
+    const message = 'Are you sure you want to CLEAR THE ENTIRE TOURNAMENT?\n\n' +
+                    'This will permanently delete:\n' +
+                    '• All players\n' +
+                    '• All matches\n' +
+                    '• All progress\n' +
+                    '• All scores\n\n' +
+                    'This action CANNOT be undone!';
+
+    if (confirm(message)) {
       this.state.clearState();
       location.reload(); // Reload page to reset everything
     }
