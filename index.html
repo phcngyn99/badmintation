@@ -13,9 +13,9 @@
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
   
   <!-- Stylesheets -->
-  <link rel="stylesheet" href="css/design-system.css?v=2024031834">
-  <link rel="stylesheet" href="css/components.css?v=2024031834">
-  <link rel="stylesheet" href="css/animations.css?v=2024031834">
+  <link rel="stylesheet" href="css/design-system.css?v=2024031835">
+  <link rel="stylesheet" href="css/components.css?v=2024031835">
+  <link rel="stylesheet" href="css/animations.css?v=2024031835">
 </head>
 <body>
   <!-- Background Blobs -->
@@ -225,8 +225,16 @@
                 <td class="info-value">6-9 players • Everyone partners with everyone</td>
               </tr>
               <tr>
+                <td class="info-label">RR Note</td>
+                <td class="info-value">Players may have different match counts (unequal distribution)</td>
+              </tr>
+              <tr>
                 <td class="info-label">Random Pairs</td>
                 <td class="info-value">4-16 players • Fixed pairs compete</td>
+              </tr>
+              <tr>
+                <td class="info-label">RP Note</td>
+                <td class="info-value">All teams play equal number of matches</td>
               </tr>
             </tbody>
           </table>
@@ -295,16 +303,24 @@
                 <td class="info-value">Individual players ranked by: Wins → Win % → Points Scored</td>
               </tr>
               <tr>
+                <td class="info-label">RR Important</td>
+                <td class="info-value">Win % is crucial because players have different match counts</td>
+              </tr>
+              <tr>
                 <td class="info-label">Random Pairs</td>
                 <td class="info-value">Teams ranked by: Wins → Win % → Points Scored</td>
               </tr>
               <tr>
+                <td class="info-label">RP Important</td>
+                <td class="info-value">All teams play equal matches, so Wins is most important</td>
+              </tr>
+              <tr>
                 <td class="info-label">Wins</td>
-                <td class="info-value">Total matches won (most important)</td>
+                <td class="info-value">Total matches won</td>
               </tr>
               <tr>
                 <td class="info-label">Win Rate</td>
-                <td class="info-value">Wins ÷ Total Matches × 100% (tiebreaker)</td>
+                <td class="info-value">Wins ÷ Total Matches × 100% (critical in RR mode)</td>
               </tr>
               <tr>
                 <td class="info-label">Points</td>
@@ -312,7 +328,7 @@
               </tr>
               <tr>
                 <td class="info-label">Example</td>
-                <td class="info-value">Player A: 5 wins, 83% • Player B: 5 wins, 80% → A wins</td>
+                <td class="info-value">Player A: 5 wins/6 matches (83%) • Player B: 5 wins/8 matches (63%) → A wins</td>
               </tr>
             </tbody>
           </table>
@@ -329,7 +345,7 @@
   </div>
 
   <!-- JavaScript Modules -->
-  <script type="module" src="js/main.js?v=2024031834"></script>
+  <script type="module" src="js/main.js?v=2024031835"></script>
 </body>
 </html>
 
