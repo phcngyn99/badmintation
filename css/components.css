@@ -726,11 +726,11 @@
 @media (max-width: 640px) {
   .section-header {
     flex-direction: column;
-    align-items: stretch;
+    align-items: center;
   }
 
   .player-count-badge {
-    align-self: flex-end;
+    align-self: center;
   }
 
   .mode-switch {
@@ -1067,6 +1067,11 @@
   padding: var(--spacing-sm);
   color: var(--clay-muted);
   border-bottom: 2px solid rgba(0, 102, 204, 0.2);
+  vertical-align: middle;
+}
+
+.leaderboard-table th:first-child {
+  text-align: center;
 }
 
 .leaderboard-table th.sortable {
@@ -1081,6 +1086,11 @@
 .leaderboard-table td {
   padding: var(--spacing-sm);
   border-bottom: 1px solid rgba(0, 102, 204, 0.05);
+  vertical-align: middle;
+}
+
+.leaderboard-table td:first-child {
+  text-align: center;
 }
 
 .leaderboard-table tr.top-3 {
