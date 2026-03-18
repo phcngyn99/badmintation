@@ -296,11 +296,12 @@ export class UIController {
       const estimatedRounds = Math.ceil(matches / recommendedCourts);
       estimatedDuration = (estimatedRounds * 15 / 60).toFixed(1);
     } else {
-      // Random Pairs: calculate optimal courts
+      // Random Pairs: MINIMUM 2 courts for parallel play
       const pairs = Math.floor(players.length / 2);
       const totalMatches = pairs * (pairs - 1) / 2;
       const targetRounds = 12; // ~3 hours
-      recommendedCourts = Math.min(6, Math.max(1, Math.ceil(totalMatches / targetRounds)));
+      const optimalCourts = Math.ceil(totalMatches / targetRounds);
+      recommendedCourts = Math.min(6, Math.max(2, optimalCourts)); // MIN 2 courts
       const estimatedRounds = Math.ceil(totalMatches / recommendedCourts);
       estimatedDuration = (estimatedRounds * 15 / 60).toFixed(1);
     }

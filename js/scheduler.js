@@ -306,11 +306,11 @@ export class MatchScheduler {
 
     // Step 2: Calculate optimal courts
     // Target: ~3 hours (12 rounds max at 15 min/round)
-    // Formula: courts = ceil(total_matches / 12) but max 6
+    // Formula: courts = ceil(total_matches / 12) but MIN 2, MAX 6
     const totalMatches = pairs.length * (pairs.length - 1) / 2;
     const targetRounds = 12; // ~3 hours
     const optimalCourts = Math.ceil(totalMatches / targetRounds);
-    const courts = Math.min(6, Math.max(1, optimalCourts));
+    const courts = Math.min(6, Math.max(2, optimalCourts)); // MIN 2 courts for parallel play
 
     console.log(`Random Pairs: ${pairs.length} pairs, ${totalMatches} matches, using ${courts} courts`);
 
