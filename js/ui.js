@@ -323,23 +323,36 @@ export class UIController {
     // Update court info directly (don't trigger input event yet, mode might not be set)
     this.updateCourtInfo(players);
 
-    // Calculate balanced mode matches
-    const balancedScheduler = new MatchScheduler(players, 'balanced');
-    const allMatches = balancedScheduler.generateMatches(courtCount);
-    const optionalMatches = allMatches.filter(m => m.isOptional).length;
-    const requiredMatches = allMatches.length - optionalMatches;
+    // Calculate match counts for BOTH modes (for display in mode selector)
 
-    // Calculate random mode matches (based on player count)
-    const randomMatches = this.calculateRandomMatches(players.length);
+    // Round-Robin matches (only if 6-9 players)
+    let balancedMatches = 0;
+    if (players.length >= 6 && players.length <= 9) {
+      const balancedScheduler = new MatchScheduler(players, 'balanced');
+      const allMatches = balancedScheduler.generateMatches(1); // Use 1 court for count
+      const optionalMatches = allMatches.filter(m => m.isOptional).length;
+      const requiredMatches = allMatches.length - optionalMatches;
+      balancedMatches = allMatches.length;
 
-    // Update the UI - for Round-Robin, show all partnerships
-    if (optionalMatches > 0) {
-      balancedCountEl.textContent = `${requiredMatches} + ${optionalMatches} optional`;
+      // Update the UI - for Round-Robin, show all partnerships
+      if (optionalMatches > 0) {
+        balancedCountEl.textContent = `${requiredMatches} + ${optionalMatches} optional`;
+      } else {
+        balancedCountEl.textContent = `${balancedMatches} matches`;
+      }
     } else {
-      balancedCountEl.textContent = `${allMatches.length} matches`;
+      // Round-Robin not available
+      balancedCountEl.textContent = '0 matches';
     }
 
-    randomCountEl.textContent = `${randomMatches} matches`;
+    // Random Pairs matches (only if 4-16 players)
+    let randomMatches = 0;
+    if (players.length >= 4 && players.length <= 16) {
+      randomMatches = this.calculateRandomMatches(players.length);
+      randomCountEl.textContent = `${randomMatches} matches`;
+    } else {
+      randomCountEl.textContent = '0 matches';
+    }
 
     // Update match preview
     this.updateMatchPreview(players);
