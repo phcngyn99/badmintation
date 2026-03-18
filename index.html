@@ -13,9 +13,9 @@
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
   
   <!-- Stylesheets -->
-  <link rel="stylesheet" href="css/design-system.css?v=2024031831">
-  <link rel="stylesheet" href="css/components.css?v=2024031831">
-  <link rel="stylesheet" href="css/animations.css?v=2024031831">
+  <link rel="stylesheet" href="css/design-system.css?v=2024031832">
+  <link rel="stylesheet" href="css/components.css?v=2024031832">
+  <link rel="stylesheet" href="css/animations.css?v=2024031832">
 </head>
 <body>
   <!-- Background Blobs -->
@@ -291,20 +291,28 @@
             </thead>
             <tbody>
               <tr>
+                <td class="info-label">Round-Robin</td>
+                <td class="info-value">Individual players ranked by: Wins → Win % → Points Scored</td>
+              </tr>
+              <tr>
+                <td class="info-label">Random Pairs</td>
+                <td class="info-value">Teams ranked by: Wins → Win % → Points Scored</td>
+              </tr>
+              <tr>
                 <td class="info-label">Wins</td>
-                <td class="info-value">Total matches won</td>
+                <td class="info-value">Total matches won (most important)</td>
               </tr>
               <tr>
                 <td class="info-label">Win Rate</td>
-                <td class="info-value">Wins ÷ Total Matches × 100%</td>
+                <td class="info-value">Wins ÷ Total Matches × 100% (tiebreaker)</td>
               </tr>
               <tr>
                 <td class="info-label">Points</td>
-                <td class="info-value">Total points scored across all matches</td>
+                <td class="info-value">Total points scored (final tiebreaker)</td>
               </tr>
               <tr>
-                <td class="info-label">Ranking</td>
-                <td class="info-value">Sorted by: Wins → Win % → Points</td>
+                <td class="info-label">Example</td>
+                <td class="info-value">Player A: 5 wins, 83% • Player B: 5 wins, 80% → A wins</td>
               </tr>
             </tbody>
           </table>
@@ -321,7 +329,7 @@
   </div>
 
   <!-- JavaScript Modules -->
-  <script type="module" src="js/main.js?v=2024031831"></script>
+  <script type="module" src="js/main.js?v=2024031832"></script>
 </body>
 </html>
 
