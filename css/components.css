@@ -172,6 +172,12 @@
   flex: 1;
 }
 
+.button-container-center {
+  display: flex;
+  justify-content: center;
+  margin-top: var(--spacing-md);
+}
+
 @media (min-width: 640px) {
   .btn-full { width: auto; }
 }
