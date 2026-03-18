@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Mobile-friendly badminton tournament manager with intelligent round-robin scheduling">
+  <title>Badminton Tournament Manager v3.0</title>
+  <!-- Version 3.0: Fixed Max 5 Matches Per Player Limit -->
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+  
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="css/design-system.css?v=2024031810">
+  <link rel="stylesheet" href="css/components.css?v=2024031810">
+  <link rel="stylesheet" href="css/animations.css?v=2024031810">
+</head>
+<body>
+  <!-- Background Blobs -->
+  <div class="blobs-container">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+  </div>
+
+  <!-- Main Container -->
+  <div class="container">
+    <!-- Hero Header -->
+    <header class="hero">
+      <h1 class="hero-title">Badminton Tournament</h1>
+    </header>
+
+    <!-- Player Management (Pre-Tournament) -->
+    <section id="playerManagement" class="section">
+      <div class="card">
+        <div class="section-header">
+          <div class="player-count-badge" id="playerCountBadge">
+            <span class="player-count-number" id="playerCount">0</span>
+            <span class="player-count-label">Players</span>
+          </div>
+        </div>
+
+        <div class="player-input-group">
+          <input
+            type="text"
+            id="playerNameInput"
+            class="input-clay"
+            placeholder="Enter player name"
+            maxlength="30"
+            autocomplete="off"
+          />
+          <button id="addPlayerBtn" class="btn btn-primary btn-md">
+            Add Player
+          </button>
+        </div>
+
+        <div id="playerRoster" class="player-roster">
+          <!-- Player cards will be added here dynamically -->
+        </div>
+
+        <div id="tournamentSetup" class="tournament-setup hidden">
+          <div class="mode-switch-container">
+            <label class="mode-switch-label">Tournament Mode</label>
+            <div class="mode-switch">
+              <input type="radio" id="modeBalanced" name="tournamentMode" value="balanced" checked>
+              <label for="modeBalanced" class="mode-switch-option">
+                <span class="mode-switch-title">Round-Robin</span>
+                <span class="mode-switch-desc" id="balancedMatchCount">7-8 matches</span>
+              </label>
+
+              <input type="radio" id="modeRandom" name="tournamentMode" value="random">
+              <label for="modeRandom" class="mode-switch-option">
+                <span class="mode-switch-title">Random Pairs</span>
+                <span class="mode-switch-desc" id="randomMatchCount">20 matches</span>
+              </label>
+            </div>
+            <div id="modeHint"></div>
+
+            <!-- Match Preview -->
+            <div class="match-preview" id="matchPreview">
+              <div class="match-preview-header">
+                <span class="match-preview-title">Match Preview</span>
+                <span class="match-preview-count" id="previewMatchCount">0 matches</span>
+              </div>
+              <div class="match-preview-list" id="matchPreviewList">
+                <!-- Matches will be listed here -->
+              </div>
+            </div>
+          </div>
+
+          <div class="setup-row">
+            <div class="setup-label-group">
+              <label for="courtCount" class="setup-label">Number of Courts:</label>
+              <span class="setup-hint" id="courtHint">(recommended, max 6)</span>
+            </div>
+            <input
+              type="number"
+              id="courtCount"
+              class="input-number"
+              value="1"
+              min="1"
+              max="6"
+            />
+          </div>
+          <div class="court-info" id="courtInfo"></div>
+          <button id="startTournamentBtn" class="btn btn-secondary btn-lg btn-full">
+            Start Tournament
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Court Display (Tournament Active) -->
+    <section id="courtDisplay" class="section hidden">
+      <h2 class="section-title">Courts</h2>
+      <div id="courtsContainer" class="courts-grid">
+        <!-- Courts added dynamically -->
+      </div>
+    </section>
+
+    <!-- Up Next Section -->
+    <section id="upNextSection" class="section hidden">
+      <div class="up-next-container">
+        <div class="up-next-label">Up Next:</div>
+        <div id="upNextList" class="up-next-list">
+          <!-- Upcoming matches added dynamically -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Match Queue -->
+    <section id="matchQueue" class="section hidden">
+      <button id="queueToggle" class="queue-toggle">
+        <span>All Matches</span>
+        <span id="queueCount" class="queue-count">(0/0)</span>
+        <span class="chevron">▼</span>
+      </button>
+      <div id="queueList" class="queue-list hidden">
+        <!-- Matches added dynamically -->
+      </div>
+    </section>
+
+    <!-- Leaderboard Modal -->
+    <div id="leaderboardModal" class="modal hidden">
+      <div class="modal-backdrop"></div>
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title">Leaderboard</h2>
+          <button id="closeLeaderboard" class="btn-close">×</button>
+        </div>
+        <div class="modal-body">
+          <table id="leaderboardTable" class="leaderboard-table">
+            <thead>
+              <tr>
+                <th>Rank</th>
+                <th>Player</th>
+                <th class="sortable" data-sort="wins">Wins</th>
+                <th class="sortable" data-sort="winPercentage">Win %</th>
+                <th class="sortable" data-sort="pointsScored">Points</th>
+              </tr>
+            </thead>
+            <tbody id="leaderboardBody">
+              <!-- Rows added dynamically -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <button id="leaderboardTab" class="leaderboard-tab hidden">
+      View Leaderboard
+    </button>
+  </div>
+
+  <!-- JavaScript Modules -->
+  <script type="module" src="js/main.js?v=2024031810"></script>
+</body>
+</html>
+
