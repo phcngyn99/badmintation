@@ -574,27 +574,35 @@ export class UIController {
         <span class="court-status">Active</span>
       </div>
 
-      <div class="team-display">
+      <div class="team-display centered">
         <div class="team-label">Team 1</div>
-        <div class="team-players">
-          <span class="player-avatar-small">${match.team1.player1.avatar || '👤'}</span>
-          ${this.escapeHtml(match.team1.player1.name)}
-          -
-          <span class="player-avatar-small">${match.team1.player2.avatar || '👤'}</span>
-          ${this.escapeHtml(match.team1.player2.name)}
+        <div class="team-players centered">
+          <div class="player-item">
+            <span class="player-avatar-small">${match.team1.player1.avatar || '👤'}</span>
+            <span class="player-name">${this.escapeHtml(match.team1.player1.name)}</span>
+          </div>
+          <span class="player-separator">&</span>
+          <div class="player-item">
+            <span class="player-avatar-small">${match.team1.player2.avatar || '👤'}</span>
+            <span class="player-name">${this.escapeHtml(match.team1.player2.name)}</span>
+          </div>
         </div>
       </div>
 
       <div class="vs-divider">VS</div>
 
-      <div class="team-display">
+      <div class="team-display centered">
         <div class="team-label">Team 2</div>
-        <div class="team-players">
-          <span class="player-avatar-small">${match.team2.player1.avatar || '👤'}</span>
-          ${this.escapeHtml(match.team2.player1.name)}
-          -
-          <span class="player-avatar-small">${match.team2.player2.avatar || '👤'}</span>
-          ${this.escapeHtml(match.team2.player2.name)}
+        <div class="team-players centered">
+          <div class="player-item">
+            <span class="player-avatar-small">${match.team2.player1.avatar || '👤'}</span>
+            <span class="player-name">${this.escapeHtml(match.team2.player1.name)}</span>
+          </div>
+          <span class="player-separator">&</span>
+          <div class="player-item">
+            <span class="player-avatar-small">${match.team2.player2.avatar || '👤'}</span>
+            <span class="player-name">${this.escapeHtml(match.team2.player2.name)}</span>
+          </div>
         </div>
       </div>
 
@@ -729,11 +737,11 @@ export class UIController {
     const inProgressCount = inProgressMatches.length;
     const pendingCount = pendingMatches.length;
 
-    // Update summary with icons
+    // Update summary with text
     countEl.innerHTML = `
-      <span class="status-summary completed">✓ ${completedCount}</span>
-      <span class="status-summary in-progress">▶ ${inProgressCount}</span>
-      <span class="status-summary pending">⏳ ${pendingCount}</span>
+      <span class="status-summary completed">Completed: ${completedCount}</span>
+      <span class="status-summary in-progress">Playing: ${inProgressCount}</span>
+      <span class="status-summary pending">Pending: ${pendingCount}</span>
     `;
 
     // Build full match list
@@ -742,13 +750,13 @@ export class UIController {
       let statusClass = '';
 
       if (match.status === 'completed') {
-        statusBadge = `<span class="match-status-badge completed">✓ ${match.team1Score}-${match.team2Score}</span>`;
+        statusBadge = `<span class="match-status-badge completed">${match.team1Score}-${match.team2Score}</span>`;
         statusClass = 'completed';
       } else if (match.status === 'in-progress') {
-        statusBadge = `<span class="match-status-badge in-progress">▶ Court ${match.courtNumber}</span>`;
+        statusBadge = `<span class="match-status-badge in-progress">Court ${match.courtNumber}</span>`;
         statusClass = 'in-progress';
       } else {
-        statusBadge = `<span class="match-status-badge pending">⏳ Pending</span>`;
+        statusBadge = `<span class="match-status-badge pending">Pending</span>`;
         statusClass = 'pending';
       }
 
