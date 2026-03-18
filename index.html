@@ -13,9 +13,9 @@
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
   
   <!-- Stylesheets -->
-  <link rel="stylesheet" href="css/design-system.css?v=2024031822">
-  <link rel="stylesheet" href="css/components.css?v=2024031822">
-  <link rel="stylesheet" href="css/animations.css?v=2024031822">
+  <link rel="stylesheet" href="css/design-system.css?v=2024031823">
+  <link rel="stylesheet" href="css/components.css?v=2024031823">
+  <link rel="stylesheet" href="css/animations.css?v=2024031823">
 </head>
 <body>
   <!-- Background Blobs -->
@@ -182,12 +182,34 @@
     <div id="scoringInfoModal" class="modal-backdrop hidden">
       <div class="modal">
         <div class="modal-header">
-          <h2>Badminton Scoring Rules</h2>
+          <h2>Tournament Guide</h2>
           <button id="closeScoringInfo" class="close-modal">×</button>
         </div>
         <div class="modal-body">
           <div class="scoring-rules">
-            <h3>Valid Scores:</h3>
+            <h3>👥 Player Requirements</h3>
+            <ul>
+              <li>✅ Minimum: <strong>4 players</strong> (2 pairs)</li>
+              <li>✅ Maximum: <strong>16 players</strong> (8 pairs)</li>
+              <li>✅ Each player gets a unique avatar</li>
+              <li>✅ Players can be shuffled for randomization</li>
+            </ul>
+
+            <h3>🏸 Tournament Modes</h3>
+            <ul>
+              <li><strong>Round-Robin (6-9 players):</strong> Everyone partners with everyone. Best for social play where you want to play with different people.</li>
+              <li><strong>Random Pairs (4-16 players):</strong> Fixed pairs compete against each other. Best for competitive play with consistent teams.</li>
+            </ul>
+
+            <h3>🏟️ Court Configuration</h3>
+            <ul>
+              <li>✅ Support for <strong>1-6 courts</strong></li>
+              <li>✅ Random Pairs requires minimum <strong>2 courts</strong> for parallel play</li>
+              <li>✅ System recommends optimal court count based on players</li>
+              <li>✅ All courts filled at tournament start for efficiency</li>
+            </ul>
+
+            <h3>🎯 Scoring Rules</h3>
             <ul>
               <li>✅ Winner must score at least <strong>21 points</strong></li>
               <li>✅ Must win by <strong>2 points</strong> (e.g., 21-19, 22-20)</li>
@@ -195,18 +217,18 @@
               <li>✅ If winner has 30, loser must have 28 or 29</li>
             </ul>
 
-            <h3>Examples:</h3>
+            <h3>📊 Score Examples</h3>
             <div class="score-examples">
               <div class="score-example valid">
-                <strong>Valid:</strong> 21-19, 22-20, 23-21, 30-28, 30-29
+                <strong>✅ Valid Scores:</strong> 21-19, 22-20, 23-21, 24-22, 30-28, 30-29
               </div>
               <div class="score-example invalid">
-                <strong>Invalid:</strong> 21-20, 23-12, 30-27, 31-29, 21-21
+                <strong>❌ Invalid Scores:</strong> 21-20 (not win by 2), 23-12 (not win by 2), 30-27 (loser must be 28+), 31-29 (max is 30), 21-21 (no ties)
               </div>
             </div>
 
-            <h3>Why These Rules?</h3>
-            <p>Official badminton rules ensure fair play and prevent quick wins. The 2-point margin requirement (except at 30) means you must clearly outplay your opponent to win.</p>
+            <h3>💡 Why These Rules?</h3>
+            <p>Official badminton rules ensure fair play and prevent quick wins. The 2-point margin requirement (except at 30) means you must clearly outplay your opponent to win. This creates more competitive and exciting matches!</p>
           </div>
         </div>
       </div>
@@ -219,7 +241,7 @@
   </div>
 
   <!-- JavaScript Modules -->
-  <script type="module" src="js/main.js?v=2024031822"></script>
+  <script type="module" src="js/main.js?v=2024031823"></script>
 </body>
 </html>
 
