@@ -317,11 +317,11 @@ export class UIController {
       courtHintEl.textContent = `(recommended, max ${constrainedMaxCourts})`;
     }
 
-    // Auto-set to recommended courts (but allow user to change)
+    // ALWAYS set to recommended courts when players change
     courtCountInput.value = recommendedCourts;
 
-    // Update court info
-    this.updateCourtInfo(players);
+    // Trigger input event to update all displays
+    courtCountInput.dispatchEvent(new Event('input', { bubbles: true }));
 
     // Calculate balanced mode matches
     const balancedScheduler = new MatchScheduler(players, 'balanced');

@@ -111,14 +111,22 @@ export class TournamentState {
   }
 
   assignMatchesToCourts() {
+    // Get all pending matches
     const availableMatches = this.matches.filter(m => m.status === 'pending');
-    const courtsNeeded = Math.min(this.courtCount, availableMatches.length);
-    
-    for (let i = 0; i < courtsNeeded; i++) {
-      if (availableMatches[i]) {
-        availableMatches[i].status = 'in-progress';
-        availableMatches[i].courtNumber = i + 1;
-        this.currentMatches.push(availableMatches[i]);
+
+    // Fill all available courts
+    const courtsToFill = Math.min(this.courtCount, availableMatches.length);
+
+    for (let courtNum = 1; courtNum <= this.courtCount; courtNum++) {
+      // Check if this court already has a match
+      const courtHasMatch = this.currentMatches.some(m => m.courtNumber === courtNum);
+
+      if (!courtHasMatch && availableMatches.length > 0) {
+        // Assign next available match to this court
+        const match = availableMatches.shift();
+        match.status = 'in-progress';
+        match.courtNumber = courtNum;
+        this.currentMatches.push(match);
       }
     }
   }
