@@ -1106,11 +1106,64 @@
   background: rgba(255, 255, 255, 0.7);
   border-radius: var(--radius-md);
   font-size: 0.875rem;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.queue-item.completed {
+  opacity: 0.6;
+  background: rgba(200, 255, 200, 0.3);
+}
+
+.queue-item.in-progress {
+  background: rgba(185, 242, 72, 0.2);
+  border: 2px solid var(--clay-yonex-lime);
+}
+
+.queue-item.pending {
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.queue-item-number {
+  font-weight: 700;
+  color: var(--clay-muted);
+  min-width: 2rem;
 }
 
 .queue-item-teams {
   font-family: var(--font-heading);
   font-weight: 700;
   color: var(--clay-foreground);
+  flex: 1;
+}
+
+.queue-item-teams .vs-text {
+  margin: 0 0.5rem;
+  color: var(--clay-muted);
+  font-weight: 500;
+}
+
+.match-status-badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.match-status-badge.completed {
+  background: var(--clay-success);
+  color: white;
+}
+
+.match-status-badge.in-progress {
+  background: var(--clay-yonex-lime);
+  color: var(--clay-foreground);
+}
+
+.match-status-badge.pending {
+  background: var(--clay-muted);
+  color: white;
 }
 

@@ -658,28 +658,50 @@ export class UIController {
   }
 
   renderQueue() {
-    const upcoming = this.state.getUpcomingMatches(5);
+    const allMatches = this.state.matches;
     const countEl = document.getElementById('queueCount');
     const listEl = document.getElementById('queueList');
 
-    countEl.textContent = `(${upcoming.length})`;
+    const totalMatches = allMatches.length;
+    const completedCount = allMatches.filter(m => m.status === 'completed').length;
+    const inProgressCount = allMatches.filter(m => m.status === 'in-progress').length;
+    const pendingCount = allMatches.filter(m => m.status === 'pending').length;
 
-    listEl.innerHTML = upcoming.map((match, index) => `
-      <div class="queue-item">
-        <div class="queue-item-teams">
-          ${index + 1}.
-          <span class="player-avatar-small">${match.team1.player1.avatar || '👤'}</span>
-          ${this.escapeHtml(match.team1.player1.name)} -
-          <span class="player-avatar-small">${match.team1.player2.avatar || '👤'}</span>
-          ${this.escapeHtml(match.team1.player2.name)}
-          vs
-          <span class="player-avatar-small">${match.team2.player1.avatar || '👤'}</span>
-          ${this.escapeHtml(match.team2.player1.name)} -
-          <span class="player-avatar-small">${match.team2.player2.avatar || '👤'}</span>
-          ${this.escapeHtml(match.team2.player2.name)}
+    countEl.textContent = `(${completedCount}/${totalMatches})`;
+
+    listEl.innerHTML = allMatches.map((match, index) => {
+      let statusBadge = '';
+      let statusClass = '';
+
+      if (match.status === 'completed') {
+        statusBadge = `<span class="match-status-badge completed">✓ ${match.team1Score}-${match.team2Score}</span>`;
+        statusClass = 'completed';
+      } else if (match.status === 'in-progress') {
+        statusBadge = `<span class="match-status-badge in-progress">▶ Court ${match.courtNumber}</span>`;
+        statusClass = 'in-progress';
+      } else {
+        statusBadge = `<span class="match-status-badge pending">⏳ Pending</span>`;
+        statusClass = 'pending';
+      }
+
+      return `
+        <div class="queue-item ${statusClass}">
+          <div class="queue-item-number">${index + 1}</div>
+          <div class="queue-item-teams">
+            <span class="player-avatar-small">${match.team1.player1.avatar || '👤'}</span>
+            ${this.escapeHtml(match.team1.player1.name)} -
+            <span class="player-avatar-small">${match.team1.player2.avatar || '👤'}</span>
+            ${this.escapeHtml(match.team1.player2.name)}
+            <span class="vs-text">vs</span>
+            <span class="player-avatar-small">${match.team2.player1.avatar || '👤'}</span>
+            ${this.escapeHtml(match.team2.player1.name)} -
+            <span class="player-avatar-small">${match.team2.player2.avatar || '👤'}</span>
+            ${this.escapeHtml(match.team2.player2.name)}
+          </div>
+          ${statusBadge}
         </div>
-      </div>
-    `).join('');
+      `;
+    }).join('');
   }
 
   toggleQueue() {
