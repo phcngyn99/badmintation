@@ -663,29 +663,61 @@ export class UIController {
     const listEl = document.getElementById('queueList');
 
     const totalMatches = allMatches.length;
-    const completedCount = allMatches.filter(m => m.status === 'completed').length;
-    const inProgressCount = allMatches.filter(m => m.status === 'in-progress').length;
-    const pendingCount = allMatches.filter(m => m.status === 'pending').length;
+    const completedMatches = allMatches.filter(m => m.status === 'completed');
+    const inProgressMatches = allMatches.filter(m => m.status === 'in-progress');
+    const pendingMatches = allMatches.filter(m => m.status === 'pending');
 
-    // Update summary: "Completed: 3 | In Progress: 2 | Pending: 5"
+    const completedCount = completedMatches.length;
+    const inProgressCount = inProgressMatches.length;
+    const pendingCount = pendingMatches.length;
+
+    // Update summary with counts only (no icons)
     countEl.innerHTML = `
-      <span class="status-summary completed">✓ ${completedCount}</span>
-      <span class="status-summary in-progress">▶ ${inProgressCount}</span>
-      <span class="status-summary pending">⏳ ${pendingCount}</span>
+      <span class="status-summary completed">${completedCount}</span>
+      <span class="status-summary in-progress">${inProgressCount}</span>
+      <span class="status-summary pending">${pendingCount}</span>
     `;
 
-    listEl.innerHTML = allMatches.map((match, index) => {
+    // Build upcoming matches row (next 3 pending matches)
+    const upcomingMatches = pendingMatches.slice(0, 3);
+    let upcomingRow = '';
+
+    if (upcomingMatches.length > 0) {
+      upcomingRow = `
+        <div class="upcoming-matches-row">
+          <div class="upcoming-label">Up Next:</div>
+          <div class="upcoming-list">
+            ${upcomingMatches.map((match, idx) => {
+              const matchNum = allMatches.indexOf(match) + 1;
+              return `
+                <div class="upcoming-match-mini">
+                  <span class="upcoming-match-number">#${matchNum}</span>
+                  <span class="upcoming-match-teams">
+                    ${this.escapeHtml(match.team1.player1.name.split(' ')[0])} & ${this.escapeHtml(match.team1.player2.name.split(' ')[0])}
+                    vs
+                    ${this.escapeHtml(match.team2.player1.name.split(' ')[0])} & ${this.escapeHtml(match.team2.player2.name.split(' ')[0])}
+                  </span>
+                </div>
+              `;
+            }).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    // Build full match list
+    const matchList = allMatches.map((match, index) => {
       let statusBadge = '';
       let statusClass = '';
 
       if (match.status === 'completed') {
-        statusBadge = `<span class="match-status-badge completed">✓ ${match.team1Score}-${match.team2Score}</span>`;
+        statusBadge = `<span class="match-status-badge completed">${match.team1Score}-${match.team2Score}</span>`;
         statusClass = 'completed';
       } else if (match.status === 'in-progress') {
-        statusBadge = `<span class="match-status-badge in-progress">▶ Court ${match.courtNumber}</span>`;
+        statusBadge = `<span class="match-status-badge in-progress">Court ${match.courtNumber}</span>`;
         statusClass = 'in-progress';
       } else {
-        statusBadge = `<span class="match-status-badge pending">⏳ Pending</span>`;
+        statusBadge = `<span class="match-status-badge pending">Pending</span>`;
         statusClass = 'pending';
       }
 
@@ -707,6 +739,8 @@ export class UIController {
         </div>
       `;
     }).join('');
+
+    listEl.innerHTML = upcomingRow + matchList;
   }
 
   toggleQueue() {
